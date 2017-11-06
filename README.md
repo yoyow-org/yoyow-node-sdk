@@ -7,5 +7,5 @@
 #### Address, Aes, PrivateKey, PublicKey, Signature, brainKey, hash, key
 ### Chain
 #### ChainStore, TransactionBuilder, ChainTypes, TransactionHelper, ChainValidation, AccountUtils
-### ws
+### Net
 #### Apis, ChainConfig, Manager
