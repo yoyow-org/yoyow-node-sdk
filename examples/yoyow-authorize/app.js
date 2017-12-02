@@ -6,7 +6,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
-var AuthCallback = require('./routes/AuthCallback');
+var Auth = require('./routes/Auth');
+var config = require("./conf/config");
 
 var app = express();
 
@@ -22,8 +23,24 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+/**
+ * 处理访问IP限制的中间件
+ */
+app.use((req, res, next) => {
+    let real_ip = req.get("X-Real-IP") || req.get("X-Forwarded-For") || req.ip;
+    if (real_ip === "::1") real_ip = "127.0.0.1";
+    let clientIp = real_ip.match(/\d+/g).join('.');
+    if (config.allow_ip.indexOf(clientIp) < 0) {
+        var err = new Error("Forbidden");
+        err.status = 403;
+        next(err);
+    } else {
+        next();
+    }
+});
+
 app.use('/', index);
-app.use('/auth_callback', AuthCallback);
+app.use('/auth', Auth);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

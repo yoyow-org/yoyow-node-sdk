@@ -16,5 +16,5 @@ Stable tag: 0.1
 
 1.install [v8js](https://github.com/phpv8/v8js/blob/php7/README.Linux.md)
 
-2.Add tags to the location you want 
+2.Add code to the location you want 
 `<?php echo yyw_login_button_show();?>`

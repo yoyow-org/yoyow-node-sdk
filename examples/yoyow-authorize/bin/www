@@ -9,6 +9,7 @@ import {yoyowSDK} from "../lib/yoyow-node-sdk";
 var app = require('../app');
 var debug = require('debug')('yoyow-authorize:server');
 var http = require('http');
+var config = require("../conf/config");
 
 /**
  * Get port from environment and store in Express.
@@ -25,10 +26,12 @@ var {Apis} = yoyowSDK;
 Apis.setRpcConnectionStatusCallback((msg) => {
     //open,error,closed
     console.log('Api status:', msg);
+    if (msg === "closed") {
+        Apis.reset(config.apiServer);
+    }
 });
-Apis.instance("ws://demo.yoyow.org:8590", true).init_promise.then((result) => {
+Apis.instance(config.apiServer, true).init_promise.then((result) => {
     console.log('Api connected......');
-
     /**
      * Create HTTP server.
      */
@@ -40,7 +43,7 @@ Apis.instance("ws://demo.yoyow.org:8590", true).init_promise.then((result) => {
     server.listen(port);
     server.on('error', onError);
     server.on('listening', onListening);
-    console.log('http opened port:', port);
+    console.log('HTTP opened port:', port);
 
 }).catch(err => {
     console.log("Api init error:", err);
