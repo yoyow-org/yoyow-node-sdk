@@ -19,7 +19,7 @@ var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 var server = null;
 
-var {Apis} = yoyowSDK;
+var {Apis,ChainStore} = yoyowSDK;
 /**
  * Create API
  */
@@ -32,19 +32,20 @@ Apis.setRpcConnectionStatusCallback((msg) => {
 });
 Apis.instance(config.apiServer, true).init_promise.then((result) => {
     console.log('Api connected......');
-    /**
-     * Create HTTP server.
-     */
-    server = http.createServer(app);
+    ChainStore.init().then(()=>{
+        /**
+         * Create HTTP server.
+         */
+        server = http.createServer(app);
 
-    /**
-     * Listen on provided port, on all network interfaces.
-     */
-    server.listen(port);
-    server.on('error', onError);
-    server.on('listening', onListening);
-    console.log('HTTP opened port:', port);
-
+        /**
+         * Listen on provided port, on all network interfaces.
+         */
+        server.listen(port);
+        server.on('error', onError);
+        server.on('listening', onListening);
+        console.log('HTTP opened port:', port);
+    });
 }).catch(err => {
     console.log("Api init error:", err);
 });
