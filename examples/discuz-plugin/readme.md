@@ -8,7 +8,7 @@ Requires at least: X3.4
 
 Tested up to: X3.4
 
-Stable tag: 0.1
+Stable tag: 0.2
 
 ## Description ##
 
