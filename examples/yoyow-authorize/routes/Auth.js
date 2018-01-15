@@ -19,8 +19,6 @@ router.get("/sign", (req, res, next) => {
     }
     let strObj = JSON.stringify(sendObj);
     let signed = Signature.sign(strObj, key);
-    console.log('--------');
-    console.log(signed.toHex());
     utils.resJson(res, 0, {sign: signed.toHex(), time: time, platform: config.platform_id});
 });
 
