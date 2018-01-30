@@ -1,6 +1,6 @@
 # yoyow-node-sdk
 
-## This sdk includes the following:
+## The sdk includes the following:
 ### Serializer
 #### Serializer, types, ops, template, SerializerValidation
 ### ECC
