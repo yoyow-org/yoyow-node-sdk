@@ -1,0 +1,30 @@
+{
+  "name": "yoyow-middleware",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">= 6.9.2"
+  },
+  "private": true,
+  "scripts": {
+    "doc": "esdoc -c esdoc.json",
+    "test": "cross-env mocha -t 20000 --compilers js:babel-core/register --recursive",
+    "example:transfer": "cross-env babel-node example/transfer"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "assert": "^1.4.1",
+    "babel-cli": "^6.24.1",
+    "babel-loader": "^7.1.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "bytebuffer": "^5.0.1",
+    "cross-env": "^5.1.3",
+    "esdoc": "^1.0.4",
+    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
+    "esdoc-standard-plugin": "^1.0.0",
+    "mocha": "^4.1.0",
+    "nodemon": "^1.11.0",
+    "secure-random": "^1.1.1",
+    "ws": "^4.0.0"
+  }
+}

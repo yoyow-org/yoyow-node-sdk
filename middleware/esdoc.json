@@ -1,0 +1,50 @@
+{
+    "source": ".",
+    "includes": ["\\.(js|es6)$"],
+    "excludes": [
+      "node_modules",
+      "bin",
+      "lib/utils.js",
+      "lib/yoyow-node-sdk.js",
+      "public",
+      "routes",
+      "views"
+    ],
+    "destination": "./doc",
+    "index": "./README.md",
+    "package": "./package.json",
+    "plugins": [
+      {
+        "name": "esdoc-standard-plugin",
+        "option": {
+          "lint": {
+            "enable": true
+          },
+          "coverage": {
+            "enable": true
+          },
+          "accessor": {
+            "access": [
+              "public",
+              "protected",
+              "private"
+            ],
+            "autoPrivate": false
+          },
+          "undocumentIdentifier": {
+            "enable": true
+          },
+          "unexportedIdentifier": {
+            "enable": false
+          },
+          "typeInference": {
+            "enable": true
+          }
+        }
+      },
+      {
+        "name": "esdoc-ecmascript-proposal-plugin",
+        "option": {"all": true}
+      }
+    ]
+  }
