@@ -40,3 +40,28 @@ export class VerifyObj{
         this.name = name;
     }
 }
+
+/**
+ * 分页对象
+ */
+export class PageWrapper{
+    constructor(cur, max, list){
+        /**
+         * 当前页
+         * @type {Number}
+         */
+        this.curPage = cur;
+
+        /**
+         * 最大页
+         * @type {Number}
+         */
+        this.maxPage = max;
+
+        /**
+         * 对象数组
+         * @type {Array}
+         */
+        this.list = list;
+    }
+}

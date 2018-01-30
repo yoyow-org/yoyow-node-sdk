@@ -38,4 +38,15 @@ describe('Api test', () => {
             });
         });
     })
+
+    it('获取账户历史记录', () => {
+        return new Promise((resolve, reject) => {
+            api.getHistory(config.platform_id, 1, 10).then(res => {
+                console.log(res);
+                resolve();
+            }).catch(e => {
+                reject(e);
+            });
+        });
+    });
 })

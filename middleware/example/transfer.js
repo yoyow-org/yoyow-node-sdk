@@ -7,7 +7,7 @@ import {yoyowSDK} from '../lib/yoyow-node-sdk'
 let {Apis, ChainStore} = yoyowSDK;
 
 Apis.instance(config.apiServer, true).init_promise.then(function (result) {
-    api.transfer(25638, null, config.platform_id, 100, true, 'aha', config.memo_key).then(() => {
+    api.transfer(config.platform_id, config.secondary_key, 9638251, 100, true, 'aha', config.memo_key).then(() => {
         console.log('转账完成');
     }).catch(e => {
         console.log('转账失败');

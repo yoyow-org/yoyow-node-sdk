@@ -3,6 +3,7 @@ import config from "../conf/config";
 var {PublicKey, Signature, ChainStore, PrivateKey, AccountUtils, Aes, TransactionBuilder, TransactionHelper} = yoyowSDK;
 import secureRandom from 'secure-random';
 import { Long } from 'bytebuffer';
+import {PageWrapper} from './entity';
 
 /**
  * Api 操作
@@ -13,14 +14,14 @@ class Api {
     /**
      * 获取账户信息
      * @param {Number|String} uid yoyow账号
-     * @returns {Promise} 
+     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve(uObj yoyow用户对象), reject(e 异常信息)
      */
     getAccount(uid){
         return new Promise((resolve, reject) => {
             if(AccountUtils.validAccountUID(uid)){
                 ChainStore.fetchAccountByUid(uid).then(uObj => {
                     if (null == uObj) {
-                        reject(new Error('Account does not exsit'));
+                        reject(new Error('yoyow id does not exsit'));
                     } else {
                         resolve(uObj);
                     }
@@ -28,7 +29,7 @@ class Api {
                     reject(err);
                 });
             }else{
-                reject(new Error('Account invalid'));
+                reject(new Error('invalid yoyow id'));
             }
         }); 
     }
@@ -42,7 +43,7 @@ class Api {
      * @param {boolean} [use_csaf] 是否使用积分 - 默认为 true
      * @param {String} [memo] 转账备注
      * @param {String} [memo_key] 备注密钥 - 需要写入备注时必填
-     * @returns {Promise} resolve(uObj yoyow用户对象)
+     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve(), reject(e 异常信息)
      */
     transfer(from_uid, from_key, to_uid, amount, use_csaf = true, memo, memo_key){
 
@@ -69,7 +70,6 @@ class Api {
             }else if(memo && !memo_key){
                 reject(new Error('need memo_key'));
             }else{
-
                 Promise.all([fetchFromKey, fetchToKey]).then(res => {
                     let memoFromKey = res[0].memo_key;
                     let memoToKey = res[1].memo_key;
@@ -126,6 +126,40 @@ class Api {
                 });
             }
         });
+    }
+
+    /**
+     * 获取账户操作历史
+     * @param {Number|String} uid yoyow账户id
+     * @param {Number} page 页码
+     * @param {Number} size 每页显示条数
+     * @returns {Promise<PageWrapper>|Promise.<T>|*|Promise} resolve(PageWrapper 分页对象), reject(e 异常信息)
+     */
+    getHistory(uid, page, size){
+        return this.getAccount(uid).then(uObj => {
+            return ChainStore.fetchRelativeAccountHistory(uid, null, 0, 1, 0).then(res => {
+                let headInx = res[0][0];
+                let maxPage = Math.ceil(headInx * 1.0 / size);
+                if(page <= 1) page = 1;
+                if(page >= maxPage) page = maxPage;
+                let start = headInx - (page - 1) * size;
+                
+                return ChainStore.fetchRelativeAccountHistory(uid, null, 0, size, start).then(res => {
+                    return {
+                        list: res,
+                        curPage: page,
+                        maxPage: Math.ceil(headInx * 1.0 / size)
+                    };
+                }).catch(e => {
+                    return Promise.reject(e);
+                });
+            }).catch(e => {
+                return Promise.reject(e);
+            });
+        }).catch(e => {
+            return Promise.reject(e);
+        });
+        
     }
 }
 
