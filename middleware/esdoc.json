@@ -39,7 +39,8 @@
           },
           "typeInference": {
             "enable": true
-          }
+          },
+          "test": {"source": "./test/"}
         }
       },
       {

@@ -1,36 +1,51 @@
-import {yoyowSDK} from "./yoyow-node-sdk";
+import { yoyowSDK } from "./yoyow-node-sdk";
 import config from "../conf/config";
-var {PublicKey, Signature, ChainStore, PrivateKey, AccountUtils, Aes, TransactionBuilder, TransactionHelper} = yoyowSDK;
 import secureRandom from 'secure-random';
 import { Long } from 'bytebuffer';
+import { PageWrapper } from './entity';
+
+var {
+    PublicKey,
+    Signature,
+    ChainStore,
+    ChainTypes,
+    PrivateKey,
+    AccountUtils,
+    Aes,
+    TransactionBuilder,
+    TransactionHelper,
+    Apis
+    } = yoyowSDK;
+
+let dynamic_global_params_type = `2.${parseInt(ChainTypes.impl_object_type.dynamic_global_property, 10)}.0`;
 
 /**
  * Api 操作
  */
 class Api {
-    constructor(){}
+    constructor() { }
 
     /**
      * 获取账户信息
      * @param {Number|String} uid yoyow账号
-     * @returns {Promise} 
+     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve(uObj yoyow用户对象), reject(e 异常信息)
      */
-    getAccount(uid){
+    getAccount(uid) {
         return new Promise((resolve, reject) => {
-            if(AccountUtils.validAccountUID(uid)){
+            if (AccountUtils.validAccountUID(uid)) {
                 ChainStore.fetchAccountByUid(uid).then(uObj => {
                     if (null == uObj) {
-                        reject(new Error('Account does not exsit'));
+                        reject(new Error('yoyow id does not exsit'));
                     } else {
                         resolve(uObj);
                     }
                 }).catch(err => {
                     reject(err);
                 });
-            }else{
-                reject(new Error('Account invalid'));
+            } else {
+                reject(new Error('invalid yoyow id'));
             }
-        }); 
+        });
     }
 
     /**
@@ -42,9 +57,9 @@ class Api {
      * @param {boolean} [use_csaf] 是否使用积分 - 默认为 true
      * @param {String} [memo] 转账备注
      * @param {String} [memo_key] 备注密钥 - 需要写入备注时必填
-     * @returns {Promise} resolve(uObj yoyow用户对象)
+     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve(block_num 交易所属块号), reject(e 异常信息)
      */
-    transfer(from_uid, from_key, to_uid, amount, use_csaf = true, memo, memo_key){
+    transfer(from_uid, from_key, to_uid, amount, use_csaf = true, memo, memo_key) {
 
         let fetchFromKey = new Promise((resolve, reject) => {
             return this.getAccount(from_uid).then(uObj => {
@@ -64,17 +79,16 @@ class Api {
 
         return new Promise((resolve, reject) => {
 
-            if(isNaN(Number(amount)) && Object.prototype.toString.call(amount) !== '[object Number'){
+            if (isNaN(Number(amount)) && Object.prototype.toString.call(amount) !== '[object Number') {
                 reject(new Error('invalid transfer amount'));
-            }else if(memo && !memo_key){
+            } else if (memo && !memo_key) {
                 reject(new Error('need memo_key'));
-            }else{
-
+            } else {
                 Promise.all([fetchFromKey, fetchToKey]).then(res => {
                     let memoFromKey = res[0].memo_key;
                     let memoToKey = res[1].memo_key;
                     let retain_count = 100000; //资产精度参数
-                    let asset = {amount: Math.round(amount * retain_count), asset_id: 0};
+                    let asset = { amount: Math.round(amount * retain_count), asset_id: 0 };
                     let extensions_data = {
                         from_prepaid: asset,
                         to_balance: asset
@@ -87,7 +101,7 @@ class Api {
                         extensions: extensions_data
                     };
 
-                    if(memo && memo.trim() != ''){
+                    if (memo && memo.trim() != '') {
 
                         let entropy = parseInt(secureRandom.randomUint8Array(1)[0]);
                         var long = Long.fromNumber(Date.now());
@@ -114,7 +128,7 @@ class Api {
                     return tr.set_required_fees(from_uid, false, use_csaf).then(() => {
                         tr.add_signer(PrivateKey.fromWif(from_key));
                         return tr.broadcast().then((b_res) => {
-                            resolve();
+                            resolve(b_res[0].block_num);
                         }).catch(e => {
                             reject(e);
                         });
@@ -125,6 +139,52 @@ class Api {
                     reject(e);
                 });
             }
+        });
+    }
+
+    /**
+     * 获取账户操作历史
+     * @param {Number|String} uid yoyow账户id
+     * @param {Number} page 页码
+     * @param {Number} size 每页显示条数
+     * @returns {Promise<PageWrapper>|Promise.<T>|*|Promise} resolve(PageWrapper 分页对象), reject(e 异常信息)
+     */
+    getHistory(uid, page, size) {
+        return this.getAccount(uid).then(uObj => {
+            return ChainStore.fetchRelativeAccountHistory(uid, null, 0, 1, 0).then(res => {
+                let headInx = res[0][0];
+                let total = headInx;
+                if(size > 100) size = 100;
+                let maxPage = Math.ceil(total * 1.0 / size);
+                if (page <= 1) page = 1;
+                if (page >= maxPage) page = maxPage;
+                let start = headInx - (page - 1) * size;
+
+                return ChainStore.fetchRelativeAccountHistory(uid, null, 0, size, start).then(list => {
+                    return new PageWrapper(page, maxPage, total, size, list);
+                }).catch(e => {
+                    return Promise.reject(e);
+                });
+            }).catch(e => {
+                return Promise.reject(e);
+            });
+        }).catch(e => {
+            return Promise.reject(e);
+        });
+    }
+
+    /**
+     * 验证块是否为不可退回
+     * - 如 将交易所属块号传入，以验证次交易为不可退回
+     * @param {Number} block_num 查询交易所属块号
+     * @returns {Promise<PageWrapper>|Promise.<T>|*|Promise} resolve(bool 是否不可退回), reject(e 异常信息)
+     */
+    confirmBlock(block_num) {
+        return Apis.instance().db_api().exec("get_objects", [[dynamic_global_params_type]]).then(global_params => {
+            let irreversible_block_num = global_params[0].last_irreversible_block_num;
+            return block_num <= irreversible_block_num;
+        }).catch(e => {
+            return Promise.reject(e);
         });
     }
 }
