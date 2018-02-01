@@ -15,7 +15,7 @@
  
     git clone https://github.com/yoyow-org/yoyow-node-sdk.git
  
-    cd yoyow-node-sdk 
+    cd yoyow-node-sdk/middleware
 
 #### Check the document
 
