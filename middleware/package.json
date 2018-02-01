@@ -7,8 +7,9 @@
   "private": true,
   "scripts": {
     "doc": "esdoc -c esdoc.json",
-    "test": "cross-env mocha -t 20000 --require babel-core/register",
-    "example:transfer": "cross-env babel-node example/transfer"
+    "test": "cross-env mocha -t 10000 --require babel-core/register",
+    "test:api": "cross-env mocha -t 10000 --require babel-core/register ./test/api.test",
+    "test:auth": "cross-env mocha -t 10000 --require babel-core/register ./test/auth.test"
   },
   "dependencies": {},
   "devDependencies": {

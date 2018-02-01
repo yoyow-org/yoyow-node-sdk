@@ -9,3 +9,17 @@
 #### ChainStore, TransactionBuilder, ChainTypes, TransactionHelper, ChainValidation, AccountUtils
 ### Net
 #### Apis, ChainConfig, Manager
+
+### Getting start
+ 
+    git clone https://github.com/yoyow-org/yoyow-node-sdk.git
+ 
+    cd yoyow-node-sdk 
+
+### Check the document
+
+    npm install
+
+    npm run doc
+
+    open ./doc/index.html

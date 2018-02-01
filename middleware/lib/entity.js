@@ -45,18 +45,30 @@ export class VerifyObj{
  * 分页对象
  */
 export class PageWrapper{
-    constructor(cur, max, list){
+    constructor(curPage, maxPage, total, size, list){
         /**
          * 当前页
          * @type {Number}
          */
-        this.curPage = cur;
+        this.curPage = curPage;
 
         /**
          * 最大页
          * @type {Number}
          */
-        this.maxPage = max;
+        this.maxPage = maxPage;
+
+        /**
+         * 总条数
+         * @type {Number}
+         */
+        this.total = total;
+
+        /**
+         * 每页条数
+         * @type {Number}
+         */
+        this.size = size;
 
         /**
          * 对象数组
