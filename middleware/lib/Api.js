@@ -41,7 +41,7 @@ class Api {
                         resolve(uObj);
                     }
                 }).catch(err => {
-                    reject({code: 2000, message: `操作失败:\n${err.message}`});
+                    reject(err);
                 });
             } else {
                 reject({code: 2002, message: '无效的账号'});
