@@ -7,7 +7,7 @@ module.exports = {
     memo_key: "",
     //平台id(yoyow id)
     platform_id: "",
-    //转账使用是否使用积分
+    //转账是否使用积分
     use_csaf: true,
     //钱包授权页URL
     wallet_url: "http://demo.yoyow.org:8000/#/authorize-service",
