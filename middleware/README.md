@@ -6,13 +6,13 @@
 
 测试网地址 [http://demo.yoyow.org:8000](http://demo.yoyow.org:8000 "yoyow钱包测试网").
 
-![创建测试网账号](https://github.com/bulangnisi/yoyow-node-sdk/tree/master/middleware/public/images/step1.png)
+![创建测试网账号](https://github.com/bulangnisi/yoyow-node-sdk/blob/master/middleware/public/images/step1.png)
 
 #### 2. 申请平台商
 
 平台商申请地址 [http://demo.yoyow.org/manage/apply](http://demo.yoyow.org/manage/apply "yoyow平台商申请").
   
-![申请平台商](https://github.com/bulangnisi/yoyow-node-sdk/tree/master/middleware/public/images/step2.png)
+![申请平台商](https://github.com/bulangnisi/yoyow-node-sdk/blob/master/middleware/public/images/step2.png)
 
 #### 3. 申请平台商审核通过后会收到来自yoyow发送的审核通过邮件.
 
@@ -28,7 +28,7 @@
     
     平台所有者的各权限私钥获取方式 登录钱包 》 左侧菜单设置 》 账号 》 查看权限 》 在对应权限密钥的右侧点击显示私钥 》 输入密码显示私钥 》 将看到的私钥拷贝进配置中.
     
-![获取对应私钥](https://github.com/bulangnisi/yoyow-node-sdk/tree/master/middleware/public/images/step3.png)
+![获取对应私钥](https://github.com/bulangnisi/yoyow-node-sdk/blob/master/middleware/public/images/step3.png)
     
 #### 5. 安装中间件服务所需node库
 
@@ -40,7 +40,7 @@
 
      npm start
     
-![启动正常情况如图](https://github.com/bulangnisi/yoyow-node-sdk/tree/master/middleware/public/images/step4.png)
+![启动正常情况如图](https://github.com/bulangnisi/yoyow-node-sdk/blob/master/middleware/public/images/step4.png)
      
 ### 请求返回 error code 状态说明
  
