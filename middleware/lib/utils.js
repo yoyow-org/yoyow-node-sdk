@@ -35,7 +35,7 @@ let utils = {
     },
 
     success(res, obj) {
-        utils.resJson(res, 0, obj);
+        utils.resJson(res, 0, obj, '操作成功');
     },
 
     error(res, err) {
