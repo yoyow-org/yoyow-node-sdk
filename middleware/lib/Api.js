@@ -3,6 +3,7 @@ import config from "../conf/config";
 import secureRandom from 'secure-random';
 import { Long } from 'bytebuffer';
 import { PageWrapper } from './entity';
+import utils from './utils';
 
 var {
     PublicKey,
@@ -35,15 +36,15 @@ class Api {
             if (AccountUtils.validAccountUID(uid)) {
                 ChainStore.fetchAccountByUid(uid).then(uObj => {
                     if (null == uObj) {
-                        reject(new Error('yoyow id does not exsit'));
+                        reject({code: 2001, message: '账号不存在'});
                     } else {
                         resolve(uObj);
                     }
                 }).catch(err => {
-                    reject(err);
+                    reject({code: 2000, message: `操作失败:\n${err.message}`});
                 });
             } else {
-                reject(new Error('invalid yoyow id'));
+                reject({code: 2002, message: '无效的账号'});
             }
         });
     }
@@ -78,11 +79,10 @@ class Api {
         });
 
         return new Promise((resolve, reject) => {
-
-            if (isNaN(Number(amount)) && Object.prototype.toString.call(amount) !== '[object Number') {
-                reject(new Error('invalid transfer amount'));
+            if (!utils.isNumber(amount)) {
+                reject({code: 2003, message: '无效的转账金额'});
             } else if (memo && !memo_key) {
-                reject(new Error('need memo_key'));
+                reject({code: 2004, message: '无效的备注私钥'});
             } else {
                 Promise.all([fetchFromKey, fetchToKey]).then(res => {
                     let memoFromKey = res[0].memo_key;
@@ -149,7 +149,7 @@ class Api {
      * @param {Number} size 每页显示条数
      * @returns {Promise<PageWrapper>|Promise.<T>|*|Promise} resolve(PageWrapper 分页对象), reject(e 异常信息)
      */
-    getHistory(uid, page, size) {
+    getHistory(uid, page = 1, size = 10) {
         return this.getAccount(uid).then(uObj => {
             return ChainStore.fetchRelativeAccountHistory(uid, null, 0, 1, 0).then(res => {
                 let headInx = res[0][0];

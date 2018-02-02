@@ -17,21 +17,23 @@ class Auth {
      * @param {String} type 签名类型 platform 或 yoyow
      * @param {Number|String} uid yoyow账户id
      * @param {String} key 零钱密钥
-     * @returns {SignObj} 
+     * @returns {Promise<PageWrapper>|Promise.<T>|*|Promise} resolve(signObj 签名对象), reject(e 异常信息)
      */
     sign(type, uid, key){
-        if(type != 'platform' && type != 'yoyow'){
-            throw new Error('无效的签名类型');
-        }
+        return new Promise((resolve, reject) => {
+            if(type != 'platform' && type != 'yoyow'){
+                reject({code: 1001, message: '无效的签名类型'});
+            }
 
-        let time = (new Date()).getTime().toString()
-        let sendObj = {
-            "time": time
-        }
-        sendObj[type] = config.platform_id;
-        let strObj = JSON.stringify(sendObj);
-        let signed = Signature.sign(strObj, PrivateKey.fromWif(key));
-        return new SignObj(signed.toHex(), time, uid);
+            let time = (new Date()).getTime().toString()
+            let sendObj = {
+                "time": time
+            }
+            sendObj[type] = config.platform_id;
+            let strObj = JSON.stringify(sendObj);
+            let signed = Signature.sign(strObj, PrivateKey.fromWif(key));
+            resolve(new SignObj(signed.toHex(), time, uid));
+        });
     }
 
     /**
@@ -40,20 +42,20 @@ class Auth {
      * @param {String} sign 验签对象
      * @param {Number} time 签名时间
      * @param {Number|String} uid yoyow账户id
-     * @returns {VerifyObj}
+     * @returns {Promise<PageWrapper>|Promise.<T>|*|Promise} resolve(verifyObj 签名验证对象), reject(e 异常信息)
      */
     verify(type, sign, time, uid){
         return new Promise((resolve, reject) => {
             if(type != 'platform' && type != 'yoyow'){
-                reject(new Error('无效的签名类型'));
+                reject({code: 1001, message: '无效的签名类型'});
             }else if(isNaN(Number(time)) && Object.prototype.toString.call(time) !== '[object Number'){
-                reject(new Error('无效的签名时间'));
+                reject({code: 1002, message: '无效的签名时间'});
             }else{
                 return api.getAccount(uid).then(uObj => {
                     let cur = (new Date()).getTime();
                     let req = (new Date(parseInt(time))).getTime();
                     if (cur - req > 2 * 60 * 1000) {//请求时间与当前时间相关2分钟被视为过期
-                        reject(new Error('请求已经过期'));
+                        reject({code: 1003, message: '请求已经过期'});
                     } else {
                         let secondary = uObj.secondary.key_auths[0][0];
                         let sObj = { time: time };
