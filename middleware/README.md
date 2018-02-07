@@ -8,9 +8,13 @@
 
 ![创建测试网账号](https://github.com/bulangnisi/yoyow-node-sdk/blob/master/middleware/public/images/step1.png)
 
+平台所有者的各权限私钥获取方式 登录钱包 》 左侧菜单设置 》 账号 》 查看权限 》 在对应权限密钥的右侧点击显示私钥 》 输入密码显示私钥 》 将看到的私钥拷贝进配置中.
+    
+![获取对应私钥](https://github.com/bulangnisi/yoyow-node-sdk/blob/master/middleware/public/images/step3.png)
+
 #### 2. 创建平台
 
-创建平台商需要最少 10000 YOYO 为抵押押金（测试网络注册赠送12000 测试币）
+    创建平台商需要最少 10000 YOYO 为抵押押金（测试网络注册赠送12000 测试币）
 
 ##### 2.1 启动cli钱包
 ###### 2.1.1 以命令行启动
@@ -146,6 +150,18 @@
         "1f08b704dd5ccf7e05e5dec45b06ad41e6382f5dd528e3f644d52ff4fb29c2040507544d5e94b84d77d70edcd68bb35b0cded0db87816ae64979ba98eeb641d5d7"
       ]
     }
+
+##### 2.5 更新平台
+
+    unlocked >>> update_platform yoyow账号uid "平台名称" 抵押金额 货币符号 "平台url地址" "平台拓展信息json字符串" true
+
+    例:
+
+    unlocked >>> update_platform 235145448 "newplatformname" 10000 YOYO null null true
+
+    返回与创建平台一样
+
+    平台名称、平台url地址和平台拓展信息如没有变动则填入null，如示例操作，不会改变平台url地址和拓展信息
 
 ##### 2.2 
 
