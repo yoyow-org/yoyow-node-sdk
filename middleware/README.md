@@ -17,7 +17,7 @@
     创建平台商需要最少 10000 YOYO 为抵押押金（测试网络注册赠送12000 测试币）
 
 ##### 2.1 启动cli钱包
-###### 2.1.1 以命令行启动
+###### 2.1.1 带参数启动
 
     打开控制台
 
@@ -163,15 +163,7 @@
 
     平台名称、平台url地址和平台拓展信息如没有变动则填入null，如示例操作，不会改变平台url地址和拓展信息
 
-##### 2.2 
-
-平台商申请地址 [http://demo.yoyow.org/manage/apply](http://demo.yoyow.org/manage/apply "yoyow平台商申请").
-  
-![申请平台商](https://github.com/bulangnisi/yoyow-node-sdk/blob/master/middleware/public/images/step2.png)
-
-#### 3. 申请平台商审核通过后会收到来自yoyow发送的审核通过邮件.
-
-#### 4. 修改中间件配置 
+#### 3. 修改中间件配置 
   
     ~/yoyow-node-sdk/middleware/conf/config.js
     
@@ -181,17 +173,13 @@
     
     platform_id: "" 平台所有者yoyow id
     
-    平台所有者的各权限私钥获取方式 登录钱包 》 左侧菜单设置 》 账号 》 查看权限 》 在对应权限密钥的右侧点击显示私钥 》 输入密码显示私钥 》 将看到的私钥拷贝进配置中.
-    
-![获取对应私钥](https://github.com/bulangnisi/yoyow-node-sdk/blob/master/middleware/public/images/step3.png)
-    
-#### 5. 安装中间件服务所需node库
+#### 4. 安装中间件服务所需node库
 
      进入 ~/yoyow-node-sdk/middleware/ 目录
     
      npm install
     
-#### 6. 启动中间件服务
+#### 5. 启动中间件服务
 
      npm start
     
