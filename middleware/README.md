@@ -25,11 +25,11 @@
 
     Mac
 
-    ./yoyow_client.mac -s"ws://47.52.155.181:11011" --chain-id f48c65c9fe6e8a5e30f5135e8d68a8d18004acc877ab622cac09542a8b7f2c98
+    ./yoyow_client.mac -s"ws://47.52.155.181:8090" --chain-id f48c65c9fe6e8a5e30f5135e8d68a8d18004acc877ab622cac09542a8b7f2c98
 
     Ubuntu
 
-    ./yoyow_client.linux -s ws://47.52.155.181:11011 --chain-id f48c65c9fe6e8a5e30f5135e8d68a8d18004acc877ab622cac09542a8b7f2c98
+    ./yoyow_client.linux -s ws://47.52.155.181:8090 --chain-id f48c65c9fe6e8a5e30f5135e8d68a8d18004acc877ab622cac09542a8b7f2c98
 
     如若提示权限不足 
 
@@ -49,7 +49,7 @@
       "pending_witness_registrations": [],
       "labeled_keys": [],
       "blind_receipts": [],
-      "ws_server": "ws://47.52.155.181:11011",
+      "ws_server": "ws://47.52.155.181:8090",
       "ws_user": "",
       "ws_password": ""
     }
