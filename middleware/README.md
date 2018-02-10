@@ -25,11 +25,11 @@
 
     Mac
 
-    ./yoyow_client.mac -s"ws://47.52.155.181:8090" --chain-id f48c65c9fe6e8a5e30f5135e8d68a8d18004acc877ab622cac09542a8b7f2c98
+    ./yoyow_client.mac -s"ws://47.52.155.181:8090" --chain-id 3505e367fe6cde243f2a1c39bd8e58557e23271dd6cbf4b29a8dc8c44c9af8fe
 
     Ubuntu
 
-    ./yoyow_client.linux -s ws://47.52.155.181:8090 --chain-id f48c65c9fe6e8a5e30f5135e8d68a8d18004acc877ab622cac09542a8b7f2c98
+    ./yoyow_client.linux -s ws://47.52.155.181:8090 --chain-id 3505e367fe6cde243f2a1c39bd8e58557e23271dd6cbf4b29a8dc8c44c9af8fe
 
     如若提示权限不足 
 
@@ -44,7 +44,7 @@
     写入
 
     {
-      "chain_id": "f48c65c9fe6e8a5e30f5135e8d68a8d18004acc877ab622cac09542a8b7f2c98",
+      "chain_id": "3505e367fe6cde243f2a1c39bd8e58557e23271dd6cbf4b29a8dc8c44c9af8fe",
       "pending_account_registrations": [],
       "pending_witness_registrations": [],
       "labeled_keys": [],
@@ -348,6 +348,6 @@
       message: 返回消息,
       data: {
         verify: 签名是否成功,
-        name: 验签此时用户的用户名
+        name: 签名的yoyow用户名
       }
     }
