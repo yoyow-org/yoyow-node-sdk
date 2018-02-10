@@ -20,6 +20,12 @@ let utils = {
         return obj == undefined || obj == null || obj == 'null' || obj == '' || obj.length == 0;
     },
 
+    isEmptyObject(obj){
+        for (var t in obj)
+            return false;
+        return true;
+    },
+
     resJson(res, code = 0, data = null, message = null) {
         let obj = { code: code, data: data };
         if (message != null) obj.message = message;
@@ -40,6 +46,20 @@ let utils = {
 
     error(res, err) {
         utils.resJson(res, err.code || 2000, null, err.message);
+    },
+
+    getRealIp(req) {
+        let real_ip = req.get("X-Real-IP") || req.get("X-Forwarded-For") || req.ip;
+        if (real_ip === "::1") real_ip = "127.0.0.1";
+        return real_ip.match(/\d+/g).join('.');
+    },
+
+    getParams(req){
+        let paramsFrom ;
+        if(!utils.isEmptyObject(req.query)) paramsFrom = req.query;
+        if(!utils.isEmptyObject(req.body)) paramsFrom = req.body;
+        if(!utils.isEmptyObject(req.params)) paramsFrom = req.params;
+        return paramsFrom;
     }
 };
 export default utils;

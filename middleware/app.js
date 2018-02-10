@@ -11,6 +11,10 @@ var auth = require('./routes/auth');
 
 var config = require("./conf/config");
 
+import utils from './lib/utils';
+import {yoyowSDK} from './lib/yoyow-node-sdk';
+var {PublicKey, Signature, ChainStore, PrivateKey} = yoyowSDK;
+
 var app = express();
 
 // view engine setup
@@ -26,19 +30,64 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'doc')));
 
+// 跨域设置
+var protocols = ['http://', 'https://'];
+app.use(function (req, res, next) {
+    let origin = req.headers.referer || req.headers.origin || false;
+    if (origin) {
+        if (origin.endsWith("/")) origin = origin.substr(0, origin.length - 1);
+        for (var ao of config.allow_origin) {
+            if (origin.startsWith(protocols[0] + ao) || origin.startsWith(protocols[1] + ao)) {
+                res.header('Access-Control-Allow-Origin', origin);
+                res.header('Access-Control-Allow-Methods', 'GET,POST');
+                res.header('Access-Control-Allow-Headers', 'Content-Type');
+                res.header('Access-Control-Allow-Credentials', 'true');
+            }
+        }
+    }
+    next();
+});
+
 /**
  * 处理访问IP限制的中间件
  */
 app.use((req, res, next) => {
-  let real_ip = req.get("X-Real-IP") || req.get("X-Forwarded-For") || req.ip;
-  if (real_ip === "::1") real_ip = "127.0.0.1";
-  let clientIp = real_ip.match(/\d+/g).join('.');
+  let clientIp = utils.getRealIp(req);
   if (config.allow_ip.indexOf(clientIp) < 0) {
       var err = new Error("Forbidden");
       err.status = 403;
       next(err);
   } else {
       next();
+  }
+});
+
+/**
+ * 处理需要安全请求的中间件
+ */
+app.use((req, res, next) => {
+  let clientIp = utils.getRealIp(req);
+  if(config.secure_routes.indexOf(req.path) >= 0){
+    let {signed, send} = utils.getParams(req);
+    let {time} = JSON.parse(send);
+    if(!time) {
+      res.json({code: 1004, message: '无效的操作时间'});
+      return;
+    }
+    let diff = (Date.now() - time) / 1000;
+    if(diff > config.secure_ageing){
+      res.json({code: 1003, message: '请求已过期.'});
+      return;
+    }
+    let pubKey = PublicKey.fromPublicKeyString(config.secure_pubkey);
+    let verify = Signature.fromHex(signed).verify(send, pubKey);
+    if(verify){
+      next();
+    }else{
+      res.json({code: 1005, message: '无效的操作签名'});
+    }
+  }else{
+    next();
   }
 });
 

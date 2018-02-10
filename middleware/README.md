@@ -167,12 +167,16 @@
   
     ~/yoyow-node-sdk/middleware/conf/config.js
     
-    secondary_key: "" 平台所有者零钱私钥
+    secondary_key: "" 平台所有者零钱私钥（获取方式参考1. 创建测试网账号）
  
-    memo_key: "" 平台所有者备注私钥
+    memo_key: "" 平台所有者备注私钥（获取方式参考1. 创建测试网账号）
     
     platform_id: "" 平台所有者yoyow id
-    
+
+    secure_ageing: 60 安全请求有效时间 默认 60 秒
+
+    secure_pubkey: "" 平台安全请求验证公钥（获取方式参考 安全请求验证）
+
 #### 4. 安装中间件服务所需node库
 
      进入 ~/yoyow-node-sdk/middleware/ 目录
@@ -194,6 +198,10 @@
     1002 无效的签名时间
 
     1003 请求已过期
+
+    1004 无效的操作时间
+
+    1005 无效的操作签名
 
     2000 api底层异常
 
@@ -257,21 +265,29 @@
       }
     }
 
-##### 1.3. 转账到指定用户 transfer
+##### 1.3. 转账到指定用户 transfer （需要安全验证的请求）
 
-  请求类型：GET
+  请求类型：POST
   
   请求参数：
+
+    {string} signed - 请求对象签名
+
+    {string} send - 请求对象JSON字符串类型
+
+    send对象结构:
 
     {Number} uid - 指定用户id
 
     {Number} amount - 转出金额
 
-    {Number} memo - 备注
+    {string} memo - 备注
+
+    {Number} time - 操作时间
     
   请求示例：
   
-    localhost:3000/api/v1/transfer?uid=9638251&amount=100&memo=yoyowgod
+    localhost:3000/api/v1/transfer?signed=1f27abacec04b90ab9bb0300d5e2d1167578e0b8955ff14bcdf3abd6078ea7b8490b275add2163a92a548360e0bc290959f22dd890794c06dab1e81abe00aedd61&send=%7B%22uid%22%3A9638251%2C%22amount%22%3A100%2C%22memo%22%3A%22hello%22%2C%22time%22%3A1518255399818%7D
     
   返回结果：
   
@@ -351,3 +367,50 @@
         name: 签名的yoyow用户名
       }
     }
+
+### 安全请求验证
+
+    涉及到资金安全相关的操作会在中间件服务中验证其有效性
+
+    获取独立的公/私钥，在cli钱包中
+
+    unlock >>> suggest_brain_key
+
+    返回类似如下（请忽使用此组密钥，仅供参考）
+
+    suggest_brain_key 
+    {
+      "brain_priv_key": "CATIVO CARLINE RECART PLOCK NUTATE SLIMY HOTLY BROOM DEBUS BAROQUE USUARY POWWOW PROCTAL UTA DISBAR RUDDY",
+      "wif_priv_key": "5HzMmhmiJXohWenSFtR4Nzkwa4vTZDUqdfUXCjwSW1LoEi1A6vW",
+      "pub_key": "YYW79PyrnjVVyNPqT8caCjVcvcYfiLg3RtLGWroRCkYa1b87TvghQ"
+    }
+
+    将pub_key写入配置中的 secure_pubkey
+
+    wif_priv_key 用于在发起操作端签名操作
+
+    签名示例
+
+    transfer操作
+
+    let pKey = '5HzMmhmiJXohWenSFtR4Nzkwa4vTZDUqdfUXCjwSW1LoEi1A6vW';
+    let uid = 9638251;
+    let amount = 100;
+    let memo = "hello";
+    let time = Date.now(); //操作时间 任何操作都必须带有此字段 用于验证操作时效
+    let sendObj = {
+      "uid": uid,
+      "amount": amount,
+      "memo": memo,
+    }
+
+    sendObj['time'] = time;
+
+    let send = JSON.stringify(sendObj);
+    let signed = Signature.sign(send, PrivateKey.fromWif(pKey)).toHex();
+
+    以此得到的 signed 和 send 用于请求transfer操作 
+    
+    如 请求文档及示例 1.3. 转账到指定用户 transfer
+
+    其他需要安全请求验证的操作根据文档改动sendObj
