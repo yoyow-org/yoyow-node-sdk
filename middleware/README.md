@@ -374,7 +374,7 @@
 
     获取独立的公/私钥，在cli钱包中
 
-    unlock >>> suggest_brain_key
+    unlocked >>> suggest_brain_key
 
     返回类似如下（请忽使用此组密钥，仅供参考）
 
@@ -397,13 +397,14 @@
     let uid = 9638251;
     let amount = 100;
     let memo = "hello";
-    let time = Date.now(); //操作时间 任何操作都必须带有此字段 用于验证操作时效
+    let time = Date.now(); 
     let sendObj = {
       "uid": uid,
       "amount": amount,
       "memo": memo,
     }
 
+    操作时间取当前时间毫秒值 任何操作都必须带有此字段 用于验证操作时效
     sendObj['time'] = time;
 
     let send = JSON.stringify(sendObj);
