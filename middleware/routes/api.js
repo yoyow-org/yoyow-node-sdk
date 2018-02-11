@@ -14,8 +14,9 @@ router.get('/getAccount', (req, res, next) => {
     });
 });
 
-router.get('/transfer', (req, res, next) => {
-    let {uid, amount, memo} = req.query;
+router.post('/transfer', (req, res, next) => {
+    let {send} = utils.getParams(req);
+    let {uid, amount, memo} = JSON.parse(send);
     Api.transfer(config.platform_id, config.secondary_key, uid, amount, config.use_csaf, memo, config.memo_key).then(block_num => {
         utils.success(res, block_num);
     }).catch(e => {

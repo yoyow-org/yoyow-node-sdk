@@ -24,15 +24,15 @@ class Auth {
             if(type != 'platform' && type != 'yoyow'){
                 reject({code: 1001, message: '无效的签名类型'});
             }
-
-            let time = (new Date()).getTime().toString()
-            let sendObj = {
-                "time": time
-            }
+            let time = Date.now().toString();
+            let sendObj = {};
             sendObj[type] = config.platform_id;
+            sendObj.time = time;
             let strObj = JSON.stringify(sendObj);
             let signed = Signature.sign(strObj, PrivateKey.fromWif(key));
-            resolve(new SignObj(signed.toHex(), time, uid));
+            let result = {sign: signed.toHex(), time: time};
+            result[type] = uid
+            resolve(result);
         });
     }
 
