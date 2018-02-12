@@ -58,9 +58,10 @@ class Auth {
                         reject({code: 1003, message: '请求已经过期'});
                     } else {
                         let secondary = uObj.secondary.key_auths[0][0];
-                        let sObj = { time: time };
-                        sObj[type] = uid;
-                        let pars = JSON.stringify(sObj);
+                        let sendObj = {};
+                        sendObj[type] = uid;
+                        sendObj.time = time;
+                        let pars = JSON.stringify(sendObj);
                         let ePkey = PublicKey.fromPublicKeyString(secondary);
                         let verify = Signature.fromHex(sign).verifyBuffer(new Buffer(pars), ePkey);
                         resolve(new VerifyObj(verify, uObj.name));
