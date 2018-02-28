@@ -6,8 +6,8 @@
   },
   "private": true,
   "scripts": {
-    "start": "cross-env PORT=3001 babel-node ./bin/www",
-    "debug": "cross-env PORT=3001 nodemon ./bin/www --exec babel-node",
+    "start": "cross-env PORT=3000 babel-node ./bin/www",
+    "debug": "cross-env PORT=3000 nodemon ./bin/www --exec babel-node",
     "doc": "esdoc -c esdoc.json",
     "test": "cross-env mocha -t 10000 --require babel-core/register",
     "test:api": "cross-env mocha -t 10000 --require babel-core/register ./test/api.test",
