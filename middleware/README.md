@@ -271,7 +271,17 @@
   
   请求参数：
 
-    {string} ciphertext - 请求对象密文
+    {Object} cipher - 请求对象密文对象
+
+             {
+
+               ct, - 密文文本 Base64
+
+               iv, - 向量 16进制
+
+               s   - salt 16进制
+
+             }
 
     请求对象结构:
 
@@ -372,6 +382,8 @@
 
     加密示例(javascript的 crypto-js 版，其他语言使用类似的AES加密方式)
 
+    默认 mode CBC , padding scheme Pkcs7
+
     transfer操作
 
     let key = 'customkey123456'; // 此key与中间件中的config 里 secure_key相同
@@ -385,9 +397,34 @@
 
     time 字段 操作时间取当前时间毫秒值 加密操作须带有此字段 用于验证操作时效
 
-    let ciphertext = CryptoJS.AES.encrypt(JSON.stringify(sendObj), key).toString();
+    let cipher = CryptoJS.AES.encrypt(JSON.stringify(sendObj), key).toString();
 
-    以此得到的 ciphertext 用于请求transfer操作 
+    $.ajax({
+      url: localhost:3000/api/transfer,
+      type: 'POST',
+      data: {
+        ct: cipher.ciphertext.toString(CryptoJS.enc.Base64),
+        iv: cipher.iv.toString(),
+        s: cipher.salt.toString()
+      }
+    })
+
+    PHP加密方式
+
+    function cryptoJsAesEncrypt($passphrase, $value){
+      $salt = openssl_random_pseudo_bytes(8);
+      $salted = '';
+      $dx = '';
+      while (strlen($salted) < 48) {
+          $dx = md5($dx.$passphrase.$salt, true);
+          $salted .= $dx;
+      }
+      $key = substr($salted, 0, 32);
+      $iv  = substr($salted, 32,16);
+      $encrypted_data = openssl_encrypt(json_encode($value), 'aes-256-cbc', $key, true, $iv);
+      $data = array("ct" => base64_encode($encrypted_data), "iv" => bin2hex($iv), "s" => bin2hex($salt));
+      return json_encode($data);
+    }
     
     如 请求文档及示例 1.3. 转账到指定用户 transfer
 
