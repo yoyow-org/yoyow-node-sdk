@@ -374,6 +374,8 @@
 
     transfer操作
 
+    let key = 'customkey123456'; // 此key与中间件中的config 里 secure_key相同
+
     let sendObj = {
       "uid": 9638251,
       "amount": 100,
