@@ -283,10 +283,6 @@
 
     {Number} time - 操作时间
     
-  请求示例：
-  
-    localhost:3000/api/v1/transfer?signed=1f27abacec04b90ab9bb0300d5e2d1167578e0b8955ff14bcdf3abd6078ea7b8490b275add2163a92a548360e0bc290959f22dd890794c06dab1e81abe00aedd61&send=%7B%22uid%22%3A9638251%2C%22amount%22%3A100%2C%22memo%22%3A%22hello%22%2C%22time%22%3A1518255399818%7D
-    
   返回结果：
   
     {
