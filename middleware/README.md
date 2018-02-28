@@ -385,7 +385,7 @@
 
     time 字段 操作时间取当前时间毫秒值 加密操作须带有此字段 用于验证操作时效
 
-    let ciphertext = CryptoJS.AES.encrypt(JSON.stringify(obj), key).toString();
+    let ciphertext = CryptoJS.AES.encrypt(JSON.stringify(sendObj), key).toString();
 
     以此得到的 ciphertext 用于请求transfer操作 
     
