@@ -62,35 +62,6 @@ app.use((req, res, next) => {
   }
 });
 
-/**
- * 处理需要安全请求的中间件
- */
-app.use((req, res, next) => {
-  let clientIp = utils.getRealIp(req);
-  if(config.secure_routes.indexOf(req.path) >= 0){
-    let {signed, send} = utils.getParams(req);
-    let {time} = JSON.parse(send);
-    if(!time) {
-      res.json({code: 1004, message: '无效的操作时间'});
-      return;
-    }
-    let diff = (Date.now() - time) / 1000;
-    if(diff > config.secure_ageing){
-      res.json({code: 1003, message: '请求已过期.'});
-      return;
-    }
-    let pubKey = PublicKey.fromPublicKeyString(config.secure_pubkey);
-    let verify = Signature.fromHex(signed).verify(send, pubKey);
-    if(verify){
-      next();
-    }else{
-      res.json({code: 1005, message: '无效的操作签名'});
-    }
-  }else{
-    next();
-  }
-});
-
 app.use('/', index);
 app.use('/api/v1', api);
 app.use('/auth', auth);

@@ -36,6 +36,8 @@ class Auth {
         });
     }
 
+    
+
     /**
      * 验证签名
      * @param {String} type 验签类型 platform 或 yoyow
@@ -43,6 +45,7 @@ class Auth {
      * @param {Number} time 签名时间
      * @param {Number|String} uid yoyow账户id
      * @returns {Promise<PageWrapper>|Promise.<T>|*|Promise} resolve(verifyObj 签名验证对象), reject(e 异常信息)
+     * @description 私钥签名 公钥验证
      */
     verify(type, sign, time, uid){
         return new Promise((resolve, reject) => {
@@ -57,12 +60,12 @@ class Auth {
                     if (cur - req > 2 * 60 * 1000) {//请求时间与当前时间相关2分钟被视为过期
                         reject({code: 1003, message: '请求已经过期'});
                     } else {
-                        let secondary = uObj.secondary.key_auths[0][0];
+                        let active = uObj.active.key_auths[0][0];
                         let sendObj = {};
                         sendObj[type] = uid;
                         sendObj.time = time;
                         let pars = JSON.stringify(sendObj);
-                        let ePkey = PublicKey.fromPublicKeyString(secondary);
+                        let ePkey = PublicKey.fromPublicKeyString(active);
                         let verify = Signature.fromHex(sign).verifyBuffer(new Buffer(pars), ePkey);
                         resolve(new VerifyObj(verify, uObj.name));
                     }

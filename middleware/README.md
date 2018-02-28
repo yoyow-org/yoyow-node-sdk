@@ -175,7 +175,7 @@
 
     secure_ageing: 60 安全请求有效时间 默认 60 秒
 
-    secure_pubkey: "" 平台安全请求验证公钥（获取方式参考 安全请求验证）
+    secure_key: "" 平台安全请求验证key 由平台自定义
 
 #### 4. 安装中间件服务所需node库
 
@@ -271,11 +271,9 @@
   
   请求参数：
 
-    {string} signed - 请求对象签名
+    {string} ciphertext - 请求对象密文
 
-    {string} send - 请求对象JSON字符串类型
-
-    send对象结构:
+    请求对象结构:
 
     {Number} uid - 指定用户id
 
@@ -284,10 +282,6 @@
     {string} memo - 备注
 
     {Number} time - 操作时间
-    
-  请求示例：
-  
-    localhost:3000/api/v1/transfer?signed=1f27abacec04b90ab9bb0300d5e2d1167578e0b8955ff14bcdf3abd6078ea7b8490b275add2163a92a548360e0bc290959f22dd890794c06dab1e81abe00aedd61&send=%7B%22uid%22%3A9638251%2C%22amount%22%3A100%2C%22memo%22%3A%22hello%22%2C%22time%22%3A1518255399818%7D
     
   返回结果：
   
@@ -372,45 +366,28 @@
 
     涉及到资金安全相关的操作会在中间件服务中验证其有效性
 
-    获取独立的公/私钥，在cli钱包中
+    使用方自定义key配置于 config 中的 secure_key 里
 
-    unlocked >>> suggest_brain_key
+    将操作对象加密传入
 
-    返回类似如下（请忽使用此组密钥，仅供参考）
-
-    suggest_brain_key 
-    {
-      "brain_priv_key": "CATIVO CARLINE RECART PLOCK NUTATE SLIMY HOTLY BROOM DEBUS BAROQUE USUARY POWWOW PROCTAL UTA DISBAR RUDDY",
-      "wif_priv_key": "5HzMmhmiJXohWenSFtR4Nzkwa4vTZDUqdfUXCjwSW1LoEi1A6vW",
-      "pub_key": "YYW79PyrnjVVyNPqT8caCjVcvcYfiLg3RtLGWroRCkYa1b87TvghQ"
-    }
-
-    将pub_key写入配置中的 secure_pubkey
-
-    wif_priv_key 用于在发起操作端签名操作
-
-    签名示例
+    加密示例(javascript的 crypto-js 版，其他语言使用类似的AES加密方式)
 
     transfer操作
 
-    let pKey = '5HzMmhmiJXohWenSFtR4Nzkwa4vTZDUqdfUXCjwSW1LoEi1A6vW';
-    let uid = 9638251;
-    let amount = 100;
-    let memo = "hello";
-    let time = Date.now(); 
+    let key = 'customkey123456'; // 此key与中间件中的config 里 secure_key相同
+
     let sendObj = {
-      "uid": uid,
-      "amount": amount,
-      "memo": memo,
+      "uid": 9638251,
+      "amount": 100,
+      "memo": "hello yoyow",
+      "time": Date.now()
     }
 
-    操作时间取当前时间毫秒值 任何操作都必须带有此字段 用于验证操作时效
-    sendObj['time'] = time;
+    time 字段 操作时间取当前时间毫秒值 加密操作须带有此字段 用于验证操作时效
 
-    let send = JSON.stringify(sendObj);
-    let signed = Signature.sign(send, PrivateKey.fromWif(pKey)).toHex();
+    let ciphertext = CryptoJS.AES.encrypt(JSON.stringify(obj), key).toString();
 
-    以此得到的 signed 和 send 用于请求transfer操作 
+    以此得到的 ciphertext 用于请求transfer操作 
     
     如 请求文档及示例 1.3. 转账到指定用户 transfer
 

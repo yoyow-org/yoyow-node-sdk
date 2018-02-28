@@ -1,12 +1,10 @@
 module.exports = {
     // api服务器地址
     apiServer: "ws://47.52.155.181:8090",
-    // 需要安全验证的路由
-    secure_routes: ['/api/v1/transfer'],
     // 安全请求有效时间，单位s
     secure_ageing: 60,
-    // 平台安全请求验证公钥
-    secure_pubkey: "",
+    // 平台安全请求验证key 由平台自定义
+    secure_key: "",
     // 平台所有者零钱私钥
     secondary_key: "",
     // 平台所有者备注私钥
