@@ -1,6 +1,7 @@
 import Api from '../lib/Api';
 import config from '../conf/config';
 import utils from '../lib/utils';
+import Secure from '../lib/Secure';
 
 var express = require('express');
 var router = express.Router();
@@ -14,9 +15,8 @@ router.get('/getAccount', (req, res, next) => {
     });
 });
 
-router.post('/transfer', (req, res, next) => {
-    let {send} = utils.getParams(req);
-    let {uid, amount, memo} = JSON.parse(send);
+router.post('/transfer', Secure.validQueue, (req, res, next) => {
+    let {uid, amount, memo} = req.decryptedData;
     Api.transfer(config.platform_id, config.secondary_key, uid, amount, config.use_csaf, memo, config.memo_key).then(block_num => {
         utils.success(res, block_num);
     }).catch(e => {

@@ -36,6 +36,8 @@ class Auth {
         });
     }
 
+    
+
     /**
      * 验证签名
      * @param {String} type 验签类型 platform 或 yoyow
