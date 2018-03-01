@@ -232,7 +232,33 @@
     {
       code: 作结果,
       message: 返回消息,
-      data: yoyow 用户对象
+      data: { // 用户信息
+        uid: 账号uid
+        name: 账号名称
+        owner: 主控权限
+        active: 资金权限
+        secondary: 零钱权限
+        memo_key: 备注密钥公钥
+        reg_info: 注册信息
+        can_post: 是否可发帖
+        can_reply: 是否可回帖
+        can_rate: 是否可评价
+        is_full_member: 是否会员
+        is_registrar: 是否注册商
+        is_admin: 是否管理员
+        statistics: { //用户资产
+          obj_id: 资产对象id
+          core_balance: 余额
+          prepaid: 零钱
+          csaf: 积分
+          total_witness_pledge: 见证人总抵押（用户创建见证人抵押数量）
+          total_committee_member_pledge: 理事会总抵押（用户创建理事会成员抵押数量）
+          total_platform_pledge: 平台总抵押（用户创建平台抵押数量）
+          releasing_witness_pledge: 见证人抵押待退回
+          releasing_committee_member_pledge: 理事会抵押待退回
+          releasing_platform_pledge: 平台抵押待退回
+        }
+      }
     }
 
 ##### 1.2. 获取指定账户近期活动记录 getHistory
@@ -271,7 +297,17 @@
   
   请求参数：
 
-    {string} ciphertext - 请求对象密文
+    {Object} cipher - 请求对象密文对象
+
+             {
+
+               ct, - 密文文本 16进制
+
+               iv, - 向量 16进制
+
+               s   - salt 16进制
+
+             }
 
     请求对象结构:
 
@@ -282,6 +318,8 @@
     {string} memo - 备注
 
     {Number} time - 操作时间
+  
+  请求示例：参照 安全请求验证
     
   返回结果：
   
@@ -372,6 +410,8 @@
 
     加密示例(javascript的 crypto-js 版，其他语言使用类似的AES加密方式)
 
+    默认 mode CBC , padding scheme Pkcs7
+
     transfer操作
 
     let key = 'customkey123456'; // 此key与中间件中的config 里 secure_key相同
@@ -385,9 +425,34 @@
 
     time 字段 操作时间取当前时间毫秒值 加密操作须带有此字段 用于验证操作时效
 
-    let ciphertext = CryptoJS.AES.encrypt(JSON.stringify(obj), key).toString();
+    let cipher = CryptoJS.AES.encrypt(JSON.stringify(sendObj), key).toString();
 
-    以此得到的 ciphertext 用于请求transfer操作 
+    $.ajax({
+      url: localhost:3000/api/transfer,
+      type: 'POST',
+      data: {
+        ct: cipher.ciphertext.toString(CryptoJS.enc.Hex),
+        iv: cipher.iv.toString(),
+        s: cipher.salt.toString()
+      }
+    })
+
+    PHP加密方式
+
+    function cryptoJsAesEncrypt($passphrase, $value){
+      $salt = openssl_random_pseudo_bytes(8);
+      $salted = '';
+      $dx = '';
+      while (strlen($salted) < 48) {
+          $dx = md5($dx.$passphrase.$salt, true);
+          $salted .= $dx;
+      }
+      $key = substr($salted, 0, 32);
+      $iv  = substr($salted, 32,16);
+      $encrypted_data = openssl_encrypt($value, 'aes-256-cbc', $key, true, $iv);
+      $data = array("ct" => bin2hex($encrypted_data), "iv" => bin2hex($iv), "s" => bin2hex($salt));
+      return json_encode($data);
+    }
     
     如 请求文档及示例 1.3. 转账到指定用户 transfer
 

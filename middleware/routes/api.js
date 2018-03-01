@@ -17,11 +17,15 @@ router.get('/getAccount', (req, res, next) => {
 
 router.post('/transfer', Secure.validQueue, (req, res, next) => {
     let {uid, amount, memo} = req.decryptedData;
-    Api.transfer(config.platform_id, config.secondary_key, uid, amount, config.use_csaf, memo, config.memo_key).then(block_num => {
-        utils.success(res, block_num);
-    }).catch(e => {
-        utils.error(res, e);
-    });
+    if(uid && amount && memo){
+        Api.transfer(config.platform_id, config.secondary_key, uid, amount, config.use_csaf, memo, config.memo_key).then(block_num => {
+            utils.success(res, block_num);
+        }).catch(e => {
+            utils.error(res, e);
+        });
+    }else{
+        utils.error(res, {code: 1005, message: '无效的操作签名'});
+    }
 
 });
 

@@ -1,6 +1,7 @@
 import utils from './utils';
 import config from '../conf/config';
 import CryptoJS from 'crypto-js';
+import CryptoJSAesJson from './aes-json-format';
 
 class Secure {
     constructor(){
@@ -15,19 +16,21 @@ class Secure {
      * @private
      */
     validCipher(req, res, next){
-        let {ciphertext} = utils.getParams(req);
-        let bytes = CryptoJS.AES.decrypt(ciphertext, config.secure_key);
-        let send = bytes.toString(CryptoJS.enc.Utf8);
-        if(!send || null == send || send.trim() == '')
-            res.json({code: 1005, message: '无效的操作签名'});
-        else{
-            try{
-                req.decryptedData = JSON.parse(send);
-            }catch(e){
+        let {ct, iv, s} = req.body;
+        let cipher = {ct, iv, s};
+        let send = CryptoJS.AES.decrypt(JSON.stringify(cipher), config.secure_key, {format: CryptoJSAesJson}).toString(CryptoJS.enc.Utf8);
+        let isValid = true;
+        try{
+            send = JSON.parse(send);
+            isValid = send != null && typeof send === 'object';
+        }catch(e){
+            isValid = false;
+        }finally{
+            if(isValid) {
                 req.decryptedData = send;
-            }finally{
                 next();
             }
+            else res.json({code: 1005, message: '无效的操作签名'});
         }
     }
 
