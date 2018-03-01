@@ -17,7 +17,7 @@ router.get('/getAccount', (req, res, next) => {
 
 router.post('/transfer', Secure.validQueue, (req, res, next) => {
     let {uid, amount, memo} = req.decryptedData;
-    if(uid && amount && memo){
+    if(uid && amount){
         Api.transfer(config.platform_id, config.secondary_key, uid, amount, config.use_csaf, memo, config.memo_key).then(block_num => {
             utils.success(res, block_num);
         }).catch(e => {
