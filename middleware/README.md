@@ -232,7 +232,7 @@
     {
       code: 作结果,
       message: 返回消息,
-      data: { // yoyow 用户信息
+      data: { // 用户信息
         uid: 账号uid
         name: 账号名称
         owner: 主控权限
@@ -246,6 +246,18 @@
         is_full_member: 是否会员
         is_registrar: 是否注册商
         is_admin: 是否管理员
+        statistics: { //用户资产
+          obj_id: 资产对象id
+          core_balance: 余额
+          prepaid: 零钱
+          csaf: 积分
+          total_witness_pledge: 见证人总抵押（用户创建见证人抵押数量）
+          total_committee_member_pledge: 理事会总抵押（用户创建理事会成员抵押数量）
+          total_platform_pledge: 平台总抵押（用户创建平台抵押数量）
+          releasing_witness_pledge: 见证人抵押待退回
+          releasing_committee_member_pledge: 理事会抵押待退回
+          releasing_platform_pledge: 平台抵押待退回
+        }
       }
     }
 
@@ -289,7 +301,7 @@
 
              {
 
-               ct, - 密文文本 Base64
+               ct, - 密文文本 16进制
 
                iv, - 向量 16进制
 
@@ -419,7 +431,7 @@
       url: localhost:3000/api/transfer,
       type: 'POST',
       data: {
-        ct: cipher.ciphertext.toString(CryptoJS.enc.Base64),
+        ct: cipher.ciphertext.toString(CryptoJS.enc.Hex),
         iv: cipher.iv.toString(),
         s: cipher.salt.toString()
       }
@@ -437,8 +449,8 @@
       }
       $key = substr($salted, 0, 32);
       $iv  = substr($salted, 32,16);
-      $encrypted_data = openssl_encrypt(json_encode($value), 'aes-256-cbc', $key, true, $iv);
-      $data = array("ct" => base64_encode($encrypted_data), "iv" => bin2hex($iv), "s" => bin2hex($salt));
+      $encrypted_data = openssl_encrypt($value, 'aes-256-cbc', $key, true, $iv);
+      $data = array("ct" => bin2hex($encrypted_data), "iv" => bin2hex($iv), "s" => bin2hex($salt));
       return json_encode($data);
     }
     

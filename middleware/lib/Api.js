@@ -37,8 +37,24 @@ class Api {
                 ChainStore.fetchAccountByUid(uid).then(uObj => {
                     if (null == uObj) {
                         reject({code: 2001, message: '账号不存在'});
-                    } else {
-                        resolve(uObj);
+                    }else{
+                        ChainStore.fetchAccountStatisticsByUid(uid).then(statistics => {
+                            uObj.statistics = {
+                                obj_id: statistics.id,
+                                core_balance: statistics.core_balance,
+                                csaf: statistics.csaf,
+                                prepaid: statistics.prepaid,
+                                total_witness_pledge: statistics.total_witness_pledge,
+                                total_committee_member_pledge: statistics.total_committee_member_pledge,
+                                total_platform_pledge: statistics.total_platform_pledge,
+                                releasing_witness_pledge: statistics.releasing_witness_pledge,
+                                releasing_committee_member_pledge: statistics.releasing_committee_member_pledge,
+                                releasing_platform_pledge: statistics.releasing_platform_pledge
+                            }
+                            resolve(uObj);
+                        }).catch(e => {
+                            reject(e);
+                        });
                     }
                 }).catch(err => {
                     reject(err);
