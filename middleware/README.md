@@ -232,7 +232,21 @@
     {
       code: 作结果,
       message: 返回消息,
-      data: yoyow 用户对象
+      data: { // yoyow 用户信息
+        uid: 账号uid
+        name: 账号名称
+        owner: 主控权限
+        active: 资金权限
+        secondary: 零钱权限
+        memo_key: 备注密钥公钥
+        reg_info: 注册信息
+        can_post: 是否可发帖
+        can_reply: 是否可回帖
+        can_rate: 是否可评价
+        is_full_member: 是否会员
+        is_registrar: 是否注册商
+        is_admin: 是否管理员
+      }
     }
 
 ##### 1.2. 获取指定账户近期活动记录 getHistory
@@ -292,6 +306,8 @@
     {string} memo - 备注
 
     {Number} time - 操作时间
+  
+  请求示例：参照 安全请求验证
     
   返回结果：
   
