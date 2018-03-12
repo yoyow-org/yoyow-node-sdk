@@ -25,11 +25,11 @@
 
     Mac
 
-    ./yoyow_client.mac -s"ws://47.52.155.181:8090" --chain-id 3505e367fe6cde243f2a1c39bd8e58557e23271dd6cbf4b29a8dc8c44c9af8fe
+    ./yoyow_client.mac -s"ws://47.52.155.181:10011" --chain-id 3505e367fe6cde243f2a1c39bd8e58557e23271dd6cbf4b29a8dc8c44c9af8fe
 
     Ubuntu
 
-    ./yoyow_client.linux -s ws://47.52.155.181:8090 --chain-id 3505e367fe6cde243f2a1c39bd8e58557e23271dd6cbf4b29a8dc8c44c9af8fe
+    ./yoyow_client.linux -s ws://47.52.155.181:10011 --chain-id 3505e367fe6cde243f2a1c39bd8e58557e23271dd6cbf4b29a8dc8c44c9af8fe
 
     如若提示权限不足 
 
@@ -49,7 +49,7 @@
       "pending_witness_registrations": [],
       "labeled_keys": [],
       "blind_receipts": [],
-      "ws_server": "ws://47.52.155.181:8090",
+      "ws_server": "ws://47.52.155.181:10011",
       "ws_user": "",
       "ws_password": ""
     }
@@ -203,6 +203,10 @@
 
     1005 无效的操作签名
 
+    1006 账号信息与链上不匹配（常见于私钥恢复之后，使用其他电脑的本地数据或旧的备份文件进行授权操作导致）
+
+    1007 未授权该平台
+
     2000 api底层异常
 
     2001 账号不存在
@@ -210,6 +214,10 @@
     2002 无效的账号
 
     2003 无效的转账金额
+
+    2004 零钱和积分不足支付操作手续费
+
+    3001 文章ID必须为该平台该发文人的上一篇文章ID +1（平台管理发文id）
       
 ### 请求文档及示例
 
@@ -347,6 +355,168 @@
       code: 操作结果,
       message: 返回消息,
       data: 此块是否不可退回 
+    }
+
+##### 1.5. 发送文章 post（需要安全验证的请求）
+
+  请求类型：POST
+
+  请求参数：
+
+
+    {Object} cipher - 请求对象密文对象
+
+             {
+
+               ct, - 密文文本 16进制
+
+               iv, - 向量 16进制
+
+               s   - salt 16进制
+
+             }
+
+  请求对象结构:
+
+    {Number} platform - 平台账号
+
+    {Number} poster - 发文人账号
+
+    {Number} post_pid - 文章编号
+
+    {String} title - 文章标题
+
+    {String} body - 文章内容
+
+    {String} extra_data - 文章拓展信息
+
+    {String} origin_platform - 原文平台账号（默认 null）
+
+    {String} origin_poster - 原文发文者账号（默认 null）
+    
+    {String} origin_post_pid - 原文文章编号（默认 null）
+
+    {Number} time - 操作时间
+
+  请求示例：参照 安全请求验证
+    
+  返回结果：
+  
+    {
+      code: 操作结果,
+      message: 返回消息,
+      data: 该交易广播成功后所属块号
+    }
+
+##### 1.6. 更新文章 postUpdate（需要安全验证的请求）
+
+请求类型：POST
+
+  请求参数：
+
+
+    {Object} cipher - 请求对象密文对象
+
+             {
+
+               ct, - 密文文本 16进制
+
+               iv, - 向量 16进制
+
+               s   - salt 16进制
+
+             }
+
+  请求对象结构:
+
+    {Number} platform - 平台账号
+
+    {Number} poster - 发文人账号
+
+    {Number} post_pid - 文章编号
+
+    {String} title - 文章标题
+
+    {String} body - 文章内容
+
+    {String} extra_data - 文章拓展信息
+
+    {Number} time - 操作时间
+
+  备注：修改文章操作时，title，body 和 extra_data 必须出现至少一个，并且与原文相同字段的内容不同
+
+  请求示例：参照 安全请求验证
+    
+  返回结果：
+  
+    {
+      code: 操作结果,
+      message: 返回消息,
+      data: 该交易广播成功后所属块号
+    }
+
+##### 1.7. 获取文章 getPost
+
+  请求类型：GET
+
+  请求参数：
+    
+    {Number} platform - 平台账号
+
+    {Number} poster -发文者账号
+
+    {Number} post_pid - 文章编号
+
+  请求示例：
+
+    http://localhost:3001/api/v1/getPost?platform=217895094&poster=210425155&post_pid=3
+
+  返回结果：
+
+    {
+      code: 操作结果,
+      message: 返回消息,
+      data: {
+        "id":"1.7.12", - 文章ObjectId
+        "platform":217895094, - 平台账号
+        "poster":210425155, - 发文者账号
+        "post_pid":5, - 文章编号
+        "hash_value":"bb76a28981710f513479fa0d11fee154795943146f364da699836fb1f375875f", - 文章body hash值
+        "extra_data":"{}", - 拓展信息
+        "title":"test title in js for update", - 文章title
+        "body":"test boyd in js for update", - 文章内容
+        "create_time":"2018-03-12T10:22:03", - 文章创建时间
+        "last_update_time":"2018-03-12T10:23:24", - 文章最后更新时间
+        "origin_platform", - 原文平台账号 （仅对于创建文章时为转发时存在）
+        "origin_poster", - 原文发文者账号 （仅对于创建文章时为转发时存在）
+        "origin_post_pid" - 原文发文编号 （仅对于创建文章时为转发时存在）
+      }
+    }
+
+##### 1.8. 获取文章列表 getPostList
+
+  请求类型：GET
+
+  请求参数：
+    
+    {Number} platform - 平台账号
+
+    {Number} poster -发文者账号（默认null，为null时查询该平台所有文章）
+
+    {Number} limit - 加载数（默认20）
+
+    {String} start - 开始时间 'yyyy-MM-ddThh:mm:ss' ISOString （加载下一页时将当前加载出的数据的最后一条的create_time传入，不传则为从头加载）
+
+  请求示例：
+
+    http://localhost:3001/api/v1/getPostList?platform=217895094&poster=210425155&limit=2&start=2018-03-12T09:35:36
+
+  返回结果：
+
+    {
+      code: 操作结果,
+      message: 返回消息,
+      data: [文章对象（参考获取单个文章返回的数据结构）]
     }
 
 #### 2. Auth 相关

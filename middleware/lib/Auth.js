@@ -67,7 +67,8 @@ class Auth {
                         let pars = JSON.stringify(sendObj);
                         let ePkey = PublicKey.fromPublicKeyString(active);
                         let verify = Signature.fromHex(sign).verifyBuffer(new Buffer(pars), ePkey);
-                        resolve(new VerifyObj(verify, uObj.name));
+                        if(!verify) reject({code: 1006, message: '账号信息与链上不匹配'});
+                        else resolve(new VerifyObj(verify, uObj.name));
                     }
                 }).catch(e => {
                     reject(e);
