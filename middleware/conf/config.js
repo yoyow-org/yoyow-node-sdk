@@ -1,6 +1,6 @@
 module.exports = {
     // api服务器地址
-    apiServer: "ws://47.52.155.181:8090",
+    apiServer: "ws://47.52.155.181:10011",
     // 安全请求有效时间，单位s
     secure_ageing: 60,
     // 平台安全请求验证key 由平台自定义
