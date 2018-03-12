@@ -461,7 +461,7 @@
 
   请求参数：
     
-    {Number} platform - 平台账号
+    {Number} platform - 平台账号
 
     {Number} poster -发文者账号
 
@@ -499,7 +499,7 @@
 
   请求参数：
     
-    {Number} platform - 平台账号
+    {Number} platform - 平台账号
 
     {Number} poster -发文者账号（默认null，为null时查询该平台所有文章）
 
