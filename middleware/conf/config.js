@@ -13,6 +13,8 @@ module.exports = {
     platform_id: "",
     // 转账是否使用积分
     use_csaf: true,
+    // 转账是否转到余额 否则转到零钱
+    to_balance: true,
     // 钱包授权页URL
     wallet_url: "http://demo.yoyow.org:8000/#/authorize-service",
     // 允许接入的IP列表

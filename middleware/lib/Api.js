@@ -73,12 +73,13 @@ class Api {
      * @param {String} from_key 转出账号零钱私钥
      * @param {Number|String} to_uid 转入yoyow账号
      * @param {Number} amount 转账数额
-     * @param {boolean} [use_csaf] 是否使用积分 - 默认为 true
+     * @param {boolean} [use_csaf = true] 是否使用积分 - 默认为 true
+     * @param {boolean} [toBlance = true] 是否转账到零钱
      * @param {String} [memo] 转账备注
      * @param {String} [memo_key] 备注密钥 - 需要写入备注时必填
      * @returns {Promise<U>|Promise.<T>|*|Promise} resolve(block_num 交易所属块号), reject(e 异常信息)
      */
-    transfer(from_uid, from_key, to_uid, amount, use_csaf = true, memo, memo_key) {
+    transfer(from_uid, from_key, to_uid, amount, use_csaf = true, toBlance = true, memo, memo_key) {
 
         let fetchFromKey = new Promise((resolve, reject) => {
             return this.getAccount(from_uid).then(uObj => {
@@ -110,6 +111,12 @@ class Api {
                     let extensions_data = {
                         from_prepaid: asset,
                         to_balance: asset
+                    }
+                    if(!toBlance){
+                        extensions_data = {
+                            from_prepaid: asset,
+                            to_prepaid: asset
+                        }
                     }
 
                     let op_data = {
