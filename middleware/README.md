@@ -14,7 +14,7 @@
 
 #### 2. 创建平台
 
-    创建平台商需要最少 10000 YOYO 为抵押押金（测试网络注册赠送12000 测试币）
+    创建平台商需要最少 11000 YOYO，其中10000 为最低抵押押金，1000为创建平台手续费（测试网络注册赠送12000 测试币）
 
 ##### 2.1 启动cli钱包
 ###### 2.1.1 带参数启动
@@ -166,17 +166,37 @@
 #### 3. 修改中间件配置 
   
     ~/yoyow-node-sdk/middleware/conf/config.js
+
+    // api服务器地址
+    apiServer: "ws://47.52.155.181:10011",
+
+    // 安全请求有效时间，单位s
+    secure_ageing: 60,
+
+    // 平台安全请求验证key 由平台自定义
+    secure_key: "",
+
+    // 平台所有者零钱私钥（获取方式参考1. 创建测试网账号）
+    secondary_key: "", 
+
+    // 平台所有者备注私钥（获取方式参考1. 创建测试网账号）
+    memo_key: "5JknyFdAuHqvv7r2m2Am7cUUCmQ4T2kFB7dtPWiKrvt8i7N1x3D",
+
+    // 平台id(yoyow id)
+    platform_id: "",
+
+    // 转账是否使用积分
+    use_csaf: true,
+
+    // 转账是否转到余额 否则转到零钱
+    to_balance: true,
+
+    // 钱包授权页URL
+    wallet_url: "http://demo.yoyow.org:8000/#/authorize-service",
+
+    // 允许接入的IP列表
+    allow_ip: ["localhost", "127.0.0.1"]
     
-    secondary_key: "" 平台所有者零钱私钥（获取方式参考1. 创建测试网账号）
- 
-    memo_key: "" 平台所有者备注私钥（获取方式参考1. 创建测试网账号）
-    
-    platform_id: "" 平台所有者yoyow id
-
-    secure_ageing: 60 安全请求有效时间 默认 60 秒
-
-    secure_key: "" 平台安全请求验证key 由平台自定义
-
 #### 4. 安装中间件服务所需node库
 
      进入 ~/yoyow-node-sdk/middleware/ 目录
@@ -539,7 +559,8 @@
       data: {
         sign: 签名结果,
         time: 操作时间毫秒值,
-        platform: 签名平台所有人id
+        platform: 签名平台所有人id,
+        url: 钱包授权url
       }
     }
 
