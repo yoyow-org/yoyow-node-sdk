@@ -26,7 +26,7 @@ class Auth {
             }
             let time = Date.now().toString();
             let sendObj = {};
-            sendObj[type] = config.platform_id;
+            sendObj[type] = uid;
             sendObj.time = time;
             let strObj = JSON.stringify(sendObj);
             let signed = Signature.sign(strObj, PrivateKey.fromWif(key));
@@ -42,13 +42,14 @@ class Auth {
      * 验证签名
      * @param {String} type 验签类型 platform 或 yoyow
      * @param {String} sign 验签对象
-     * @param {Number} time 签名时间
-     * @param {Number|String} uid yoyow账户id
+     * @param {String|Number} time 签名时间
+     * @param {Number} uid yoyow账户id
      * @returns {Promise<PageWrapper>|Promise.<T>|*|Promise} resolve(verifyObj 签名验证对象), reject(e 异常信息)
      * @description 私钥签名 公钥验证
      */
     verify(type, sign, time, uid){
         return new Promise((resolve, reject) => {
+            if(typeof time === 'number') time = time.toString();
             if(type != 'platform' && type != 'yoyow'){
                 reject({code: 1001, message: '无效的签名类型'});
             }else if(isNaN(Number(time)) && Object.prototype.toString.call(time) !== '[object Number'){
@@ -57,7 +58,7 @@ class Auth {
                 return api.getAccount(uid).then(uObj => {
                     let cur = (new Date()).getTime();
                     let req = (new Date(parseInt(time))).getTime();
-                    if (cur - req > 2 * 60 * 1000) {//请求时间与当前时间相关2分钟被视为过期
+                    if (cur - req > config.secure_ageing * 1000) {//请求时间与当前时间相关2分钟被视为过期
                         reject({code: 1003, message: '请求已经过期'});
                     } else {
                         let active = uObj.active.key_auths[0][0];

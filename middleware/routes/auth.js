@@ -7,6 +7,7 @@ var router = express.Router();
 
 router.get("/sign", (req, res, next) => {
     Auth.sign('platform', config.platform_id, config.secondary_key).then(signObj => {
+        signObj.url = config.wallet_url;
         utils.success(res, signObj);
     }).catch(e => {
         utils.error(res, e);
