@@ -17,8 +17,8 @@ router.get('/getAccount', (req, res, next) => {
 
 router.post('/transfer', Secure.validQueue, (req, res, next) => {
     let {uid, amount, memo} = req.decryptedData;
-        Api.transfer(config.platform_id, config.secondary_key, uid, amount, config.use_csaf, config.to_balance, memo, config.memo_key).then(block_num => {
-            utils.success(res, block_num);
+        Api.transfer(config.platform_id, config.secondary_key, uid, amount, config.use_csaf, config.to_balance, memo, config.memo_key).then(tx => {
+            utils.success(res, tx);
         }).catch(e => {
             utils.error(res, e);
         });
@@ -44,8 +44,8 @@ router.get('/confirmBlock', (req, res, next) => {
 
 router.post('/post', Secure.validQueue, (req, res, next) => {
     let {platform, poster, post_pid, title, body, extra_data, origin_platform, origin_poster, origin_post_pid} = req.decryptedData;
-    Api.post(platform, poster, post_pid, title, body, extra_data, origin_platform, origin_poster, origin_post_pid).then( block_num => {
-        utils.success(res, block_num);
+    Api.post(platform, poster, post_pid, title, body, extra_data, origin_platform, origin_poster, origin_post_pid).then( tx => {
+        utils.success(res, tx);
     }).catch(e => {
         utils.error(res, e);
     });
@@ -53,8 +53,8 @@ router.post('/post', Secure.validQueue, (req, res, next) => {
 
 router.post('/postUpdate', Secure.validQueue, (req, res, next) => {
     let {platform, poster, post_pid, title, body, extra_data} = req.decryptedData;
-    Api.postUpdate(platform, poster, post_pid, title, body, extra_data).then(block_num => {
-        utils.success(res, block_num);
+    Api.postUpdate(platform, poster, post_pid, title, body, extra_data).then(tx => {
+        utils.success(res, tx);
     }).catch(e => {
         utils.error(res, e);
     });

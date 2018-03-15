@@ -354,7 +354,10 @@
     {
       code: 操作结果,
       message: 返回消息,
-      data: 该交易广播成功后所属块号
+      data: {
+        block_num: 操作所属块号
+        txid: 操作id
+      }
     }
 
 ##### 1.4. 验证块是否不可退回 confirmBlock
@@ -425,7 +428,10 @@
     {
       code: 操作结果,
       message: 返回消息,
-      data: 该交易广播成功后所属块号
+      data: {
+        block_num: 操作所属块号
+        txid: 操作id
+      }
     }
 
 ##### 1.6. 更新文章 postUpdate（需要安全验证的请求）
@@ -472,7 +478,10 @@
     {
       code: 操作结果,
       message: 返回消息,
-      data: 该交易广播成功后所属块号
+      data: {
+        block_num: 操作所属块号
+        txid: 操作id
+      }
     }
 
 ##### 1.7. 获取文章 getPost

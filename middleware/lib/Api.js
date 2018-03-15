@@ -77,7 +77,7 @@ class Api {
      * @param {boolean} [toBlance = true] 是否转账到零钱
      * @param {String} [memo] 转账备注
      * @param {String} [memo_key] 备注密钥 - 需要写入备注时必填
-     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve(block_num 交易所属块号), reject(e 异常信息)
+     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve({block_num 操作所属块号, txid 操作id}), reject(e 异常信息)
      */
     transfer(from_uid, from_key, to_uid, amount, use_csaf = true, toBlance = true, memo, memo_key) {
 
@@ -153,7 +153,10 @@ class Api {
                     return tr.set_required_fees(from_uid, false, use_csaf).then(() => {
                         tr.add_signer(PrivateKey.fromWif(from_key));
                         return tr.broadcast().then((b_res) => {
-                            resolve(b_res[0].block_num);
+                            resolve({
+                                block_num: b_res[0].block_num,
+                                txid: b_res[0].id
+                            });
                         }).catch(e => {
                             reject(e);
                         });
@@ -225,7 +228,7 @@ class Api {
      * @param {Number} [origin_platform = null] 原文章发文平台 
      * @param {Number} [origin_poster = null] 原文章发文人 
      * @param {Number} [origin_post_pid = null] 原文章编号 
-     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve(block_num 广播所属块号), reject(e 异常信息)
+     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve(block_num 操作所属块号, txid 操作id), reject(e 异常信息)
      */
     post(platform, poster, post_pid, title, body, extra_data, origin_platform = null, origin_poster = null, origin_post_pid = null){
         return new Promise((resolve, reject) => {
@@ -250,7 +253,10 @@ class Api {
             tr.set_required_fees(poster, false, true).then(() => {
                 tr.add_signer(PrivateKey.fromWif(config.secondary_key));
                 tr.broadcast().then(b_res => {
-                    resolve(b_res[0].block_num);
+                    resolve({
+                        block_num: b_res[0].block_num,
+                        txid: b_res[0].id
+                    });
                 }).catch(e => {
                     reject(ErrorUtils.formatError(e));
                 });
@@ -270,7 +276,7 @@ class Api {
      * @param {String} [title = null] 文章标题
      * @param {String} [body = null] 文章内容
      * @param {String} [extra_data = null] 拓展信息 JSON 字符串
-     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve(block_num 广播所属块号), reject(e 异常信息)
+     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve(block_num 操作所属块号, txid 操作id), reject(e 异常信息)
      */
     postUpdate(platform, poster, post_pid, title = null, body = null, extra_data = null){
         return new Promise((resolve, reject) => {
@@ -294,7 +300,10 @@ class Api {
             tr.set_required_fees(poster, false, true).then(() => {
                 tr.add_signer(PrivateKey.fromWif(config.secondary_key));
                 tr.broadcast().then(b_res => {
-                    resolve(b_res[0].block_num);
+                    resolve({
+                        block_num: b_res[0].block_num,
+                        txid: b_res[0].id
+                    });
                 }).catch(e => {
                     reject(ErrorUtils.formatError(e));
                 });
