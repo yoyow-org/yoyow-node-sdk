@@ -4,6 +4,7 @@ import secureRandom from 'secure-random';
 import { Long } from 'bytebuffer';
 import { PageWrapper } from './entity';
 import utils from './utils';
+import ErrorUtils from './ErrorUtils';
 
 var {
     PublicKey,
@@ -15,7 +16,8 @@ var {
     Aes,
     TransactionBuilder,
     TransactionHelper,
-    Apis
+    Apis,
+    hash
     } = yoyowSDK;
 
 let dynamic_global_params_type = `2.${parseInt(ChainTypes.impl_object_type.dynamic_global_property, 10)}.0`;
@@ -71,12 +73,13 @@ class Api {
      * @param {String} from_key 转出账号零钱私钥
      * @param {Number|String} to_uid 转入yoyow账号
      * @param {Number} amount 转账数额
-     * @param {boolean} [use_csaf] 是否使用积分 - 默认为 true
+     * @param {boolean} [use_csaf = true] 是否使用积分 - 默认为 true
+     * @param {boolean} [toBlance = true] 是否转账到零钱
      * @param {String} [memo] 转账备注
      * @param {String} [memo_key] 备注密钥 - 需要写入备注时必填
-     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve(block_num 交易所属块号), reject(e 异常信息)
+     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve({block_num 操作所属块号, txid 操作id}), reject(e 异常信息)
      */
-    transfer(from_uid, from_key, to_uid, amount, use_csaf = true, memo, memo_key) {
+    transfer(from_uid, from_key, to_uid, amount, use_csaf = true, toBlance = true, memo, memo_key) {
 
         let fetchFromKey = new Promise((resolve, reject) => {
             return this.getAccount(from_uid).then(uObj => {
@@ -108,6 +111,12 @@ class Api {
                     let extensions_data = {
                         from_prepaid: asset,
                         to_balance: asset
+                    }
+                    if(!toBlance){
+                        extensions_data = {
+                            from_prepaid: asset,
+                            to_prepaid: asset
+                        }
                     }
 
                     let op_data = {
@@ -144,7 +153,10 @@ class Api {
                     return tr.set_required_fees(from_uid, false, use_csaf).then(() => {
                         tr.add_signer(PrivateKey.fromWif(from_key));
                         return tr.broadcast().then((b_res) => {
-                            resolve(b_res[0].block_num);
+                            resolve({
+                                block_num: b_res[0].block_num,
+                                txid: b_res[0].id
+                            });
                         }).catch(e => {
                             reject(e);
                         });
@@ -193,7 +205,7 @@ class Api {
      * 验证块是否为不可退回
      * - 如 将交易所属块号传入，以验证次交易为不可退回
      * @param {Number} block_num 查询交易所属块号
-     * @returns {Promise<PageWrapper>|Promise.<T>|*|Promise} resolve(bool 是否不可退回), reject(e 异常信息)
+     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve(bool 是否不可退回), reject(e 异常信息)
      */
     confirmBlock(block_num) {
         return Apis.instance().db_api().exec("get_objects", [[dynamic_global_params_type]]).then(global_params => {
@@ -203,6 +215,152 @@ class Api {
             return Promise.reject(e);
         });
     }
+
+    /**
+     * 发文章
+     * - 若属于转发文章 则需传入转发参数
+     * @param {Number} platform 平台 yoyow 账号
+     * @param {Number} poster 发帖人 yoyow 账号
+     * @param {Number} post_pid 文章编号 由平台管理和提供
+     * @param {String} title 文章标题
+     * @param {String} body 文章内容
+     * @param {String} extra_data 拓展信息 JSON 字符串
+     * @param {Number} [origin_platform = null] 原文章发文平台 
+     * @param {Number} [origin_poster = null] 原文章发文人 
+     * @param {Number} [origin_post_pid = null] 原文章编号 
+     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve(block_num 操作所属块号, txid 操作id), reject(e 异常信息)
+     */
+    post(platform, poster, post_pid, title, body, extra_data, origin_platform = null, origin_poster = null, origin_post_pid = null){
+        return new Promise((resolve, reject) => {
+            let op_data = {
+                post_pid: post_pid,
+                platform: platform,
+                poster: poster,
+                hash_value: hash.sha256(body, 'hex').toString(),
+                extra_data: extra_data,
+                title: title,
+                body: body
+            };
+            // 转发情况写入转发参数
+            if(origin_post_pid && origin_platform && origin_poster){
+                op_data.origin_post_pid = origin_post_pid;
+                op_data.origin_platform = origin_platform;
+                op_data.origin_poster = origin_poster;
+            }
+
+            let tr = new TransactionBuilder();
+            tr.add_type_operation('post', op_data);
+            tr.set_required_fees(poster, false, true).then(() => {
+                tr.add_signer(PrivateKey.fromWif(config.secondary_key));
+                tr.broadcast().then(b_res => {
+                    resolve({
+                        block_num: b_res[0].block_num,
+                        txid: b_res[0].id
+                    });
+                }).catch(e => {
+                    reject(ErrorUtils.formatError(e));
+                });
+            }).catch(e => {
+                reject({code: 2000, message: e.message});
+            });
+        });
+        
+    }
+
+    /**
+     * 更新文章
+     * - title body extra_data 参数至少有一个不为空
+     * @param {Number} platform 平台 yoyow 账号
+     * @param {Number} poster 发帖人 yoyow 账号
+     * @param {Number} post_pid 文章编号 由平台管理和提供
+     * @param {String} [title = null] 文章标题
+     * @param {String} [body = null] 文章内容
+     * @param {String} [extra_data = null] 拓展信息 JSON 字符串
+     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve(block_num 操作所属块号, txid 操作id), reject(e 异常信息)
+     */
+    postUpdate(platform, poster, post_pid, title = null, body = null, extra_data = null){
+        return new Promise((resolve, reject) => {
+            let op_data = {
+                post_pid: post_pid,
+                platform: platform,
+                poster: poster
+            };
+
+            if(title) op_data.title = title;
+
+            if(body){
+                op_data.body = body;
+                op_data.hash_value = hash.sha256(body, 'hex').toString();
+            }
+
+            if(extra_data) op_data.extra_data = extra_data;
+
+            let tr = new TransactionBuilder();
+            tr.add_type_operation('post_update', op_data);
+            tr.set_required_fees(poster, false, true).then(() => {
+                tr.add_signer(PrivateKey.fromWif(config.secondary_key));
+                tr.broadcast().then(b_res => {
+                    resolve({
+                        block_num: b_res[0].block_num,
+                        txid: b_res[0].id
+                    });
+                }).catch(e => {
+                    reject(ErrorUtils.formatError(e));
+                });
+            }).catch(e => {
+                reject({code: 2000, message: e.message});
+            });
+        });
+    }
+
+    /**
+     * 获取单个文章
+     * @param {Number} platform  平台 yoyow 账号
+     * @param {Number} poster 发文人 yoyow 账号
+     * @param {Number} post_pid 文章编号
+     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve(post 文章对象), reject(e 异常信息)
+     */
+    getPost(platform, poster, post_pid){
+        return new Promise((resolve, reject) => {
+            Apis.instance().db_api().exec("get_post", [platform, poster, post_pid]).then(post => {
+                resolve(post);
+            }).catch(e => {
+                reject(e);
+            });
+        });
+    }
+
+    /**
+     * 根据平台和发帖人获取文章列表
+     * 首次加载开始时间不传
+     * 其他次加载，将上次数据的最后一条的create_time传入
+     * limit 最小 1 最大 99
+     * @param {Number} platform 平台 yoyow 账号
+     * @param {Number} [poster = null] 发文人 yoyow 账号
+     * @param {Number} limit 查询条数
+     * @param {String} start 开始时间 - 'yyyy-MM-ddThh:mm:ss' ISOString
+     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve(list 文章列表), reject(e 异常信息)
+     */
+    getPostList(platform, poster = null, limit = 20, start = new Date().toISOString().split('.')[0]){
+        if(limit < 0) limit = 0;
+        if(limit > 99) limit = 99;
+        limit ++;
+        let flag = false; //开始时间是否为某一文章的创建时间（非首次加载情况）
+        return new Promise((resolve, reject) => {
+            Apis.instance().db_api().exec("get_posts_by_platform_poster", [platform, poster, [start, '1970-01-01T00:00:00'], limit]).then(posts => {
+                posts.map(item => {
+                    if(item.create_time == start) flag = true;
+                });
+                if(flag) posts.shift();
+                else posts.pop();
+                resolve(posts);
+            }).catch(e => {
+                reject(e);
+            });
+        });
+    }
+
+
 }
 
 export default new Api();

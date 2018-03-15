@@ -17,16 +17,11 @@ router.get('/getAccount', (req, res, next) => {
 
 router.post('/transfer', Secure.validQueue, (req, res, next) => {
     let {uid, amount, memo} = req.decryptedData;
-    if(uid && amount){
-        Api.transfer(config.platform_id, config.secondary_key, uid, amount, config.use_csaf, memo, config.memo_key).then(block_num => {
-            utils.success(res, block_num);
+        Api.transfer(config.platform_id, config.secondary_key, uid, amount, config.use_csaf, config.to_balance, memo, config.memo_key).then(tx => {
+            utils.success(res, tx);
         }).catch(e => {
             utils.error(res, e);
         });
-    }else{
-        utils.error(res, {code: 1005, message: '无效的操作签名'});
-    }
-
 });
 
 router.get('/getHistory', (req, res, next) => {
@@ -42,6 +37,42 @@ router.get('/confirmBlock', (req, res, next) => {
     let {block_num} = req.query;
     Api.confirmBlock(block_num).then(bool => {
         utils.success(res, bool);
+    }).catch(e => {
+        utils.error(res, e);
+    });
+});
+
+router.post('/post', Secure.validQueue, (req, res, next) => {
+    let {platform, poster, post_pid, title, body, extra_data, origin_platform, origin_poster, origin_post_pid} = req.decryptedData;
+    Api.post(platform, poster, post_pid, title, body, extra_data, origin_platform, origin_poster, origin_post_pid).then( tx => {
+        utils.success(res, tx);
+    }).catch(e => {
+        utils.error(res, e);
+    });
+});
+
+router.post('/postUpdate', Secure.validQueue, (req, res, next) => {
+    let {platform, poster, post_pid, title, body, extra_data} = req.decryptedData;
+    Api.postUpdate(platform, poster, post_pid, title, body, extra_data).then(tx => {
+        utils.success(res, tx);
+    }).catch(e => {
+        utils.error(res, e);
+    });
+});
+
+router.get('/getPost', (req, res, next) => {
+    let {platform, poster, post_pid} = req.query;
+    Api.getPost(platform, poster, post_pid).then(post => {
+        utils.success(res, post);
+    }).catch(e => {
+        utils.error(res, e);
+    });
+});
+
+router.get('/getPostList', (req, res, next) => {
+    let {platform, poster, limit, start} = req.query;
+    Api.getPostList(platform, poster, limit, start).then(list => {
+        utils.success(res, list);
     }).catch(e => {
         utils.error(res, e);
     });

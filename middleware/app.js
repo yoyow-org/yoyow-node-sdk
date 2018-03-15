@@ -36,7 +36,7 @@ app.use(function (req, res, next) {
     let origin = req.headers.referer || req.headers.origin || false;
     if (origin) {
         if (origin.endsWith("/")) origin = origin.substr(0, origin.length - 1);
-        for (var ao of config.allow_origin) {
+        for (var ao of config.allow_ip) {
             if (origin.startsWith(protocols[0] + ao) || origin.startsWith(protocols[1] + ao)) {
                 res.header('Access-Control-Allow-Origin', origin);
                 res.header('Access-Control-Allow-Methods', 'GET,POST');
