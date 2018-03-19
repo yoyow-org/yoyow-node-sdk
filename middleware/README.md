@@ -625,15 +625,18 @@
 
     time 字段 操作时间取当前时间毫秒值 加密操作须带有此字段 用于验证操作时效
 
-    let cipher = CryptoJS.AES.encrypt(JSON.stringify(sendObj), key).toString();
+    let cipher = CryptoJS.AES.encrypt(JSON.stringify(sendObj), key);
 
     $.ajax({
-      url: localhost:3000/api/transfer,
+      url: 'localhost:3000/api/v1/transfer',
       type: 'POST',
       data: {
         ct: cipher.ciphertext.toString(CryptoJS.enc.Hex),
         iv: cipher.iv.toString(),
         s: cipher.salt.toString()
+      },
+      success: function(res){
+        // do something ...
       }
     })
 
