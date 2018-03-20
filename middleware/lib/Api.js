@@ -132,12 +132,12 @@ class Api {
                         var long = Long.fromNumber(Date.now());
                         let nonce = long.shiftLeft(8).or(Long.fromNumber(entropy)).toString();
 
-                        let message = Aes.encrypt_with_checksum(
+                        let message = config.platform_id == from_uid ? Aes.encrypt_with_checksum(
                             PrivateKey.fromWif(memo_key),
                             memoToKey,
                             nonce,
                             new Buffer(memo, 'utf-8')
-                        );
+                        ):new Buffer('uncrypto'+memo, 'utf-8').toString('hex');
                         let memo_data = {
                             from: memoFromKey,
                             to: memoToKey,
@@ -158,6 +158,8 @@ class Api {
                                 txid: b_res[0].id
                             });
                         }).catch(e => {
+                            if(e.message && e.message.indexOf('Insufficient Prepaid') >= 0)
+                                e = {code: 2005, message: '零钱不足'}
                             reject(e);
                         });
                     }).catch(e => {

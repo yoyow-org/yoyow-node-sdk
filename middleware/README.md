@@ -237,6 +237,8 @@
 
     2004 零钱和积分不足支付操作手续费
 
+    2005 零钱不足
+
     3001 文章ID必须为该平台该发文人的上一篇文章ID +1（平台管理发文id）
       
 ### 请求文档及示例
@@ -546,6 +548,48 @@
       code: 操作结果,
       message: 返回消息,
       data: [文章对象（参考获取单个文章返回的数据结构）]
+    }
+##### 1.9. 用户对用户通过平台转账 transferFromUser（需要安全验证的请求）
+
+  请求类型：POST
+
+  请求参数：
+
+    {Object} cipher - 请求对象密文对象
+
+             {
+
+               ct, - 密文文本 16进制
+
+               iv, - 向量 16进制
+
+               s   - salt 16进制
+
+             }
+
+  请求对象结构：
+
+    {Number} from - 转账发起账号 yoyow id
+
+    {Number} to - 转账目标账号 yoyow id
+
+    {Number} amount - 转账金额
+
+    {String} memo - 备注
+
+    {Number} time - 操作时间
+  
+  请求示例：参照 安全请求验证
+    
+  返回结果：
+  
+    {
+      code: 操作结果,
+      message: 返回消息,
+      data: {
+        block_num: 操作所属块号
+        txid: 操作id
+      }
     }
 
 #### 2. Auth 相关
