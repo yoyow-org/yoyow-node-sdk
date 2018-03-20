@@ -17,12 +17,21 @@ router.get('/getAccount', (req, res, next) => {
 
 router.post('/transfer', Secure.validQueue, (req, res, next) => {
     let {uid, amount, memo} = req.decryptedData;
-        Api.transfer(config.platform_id, config.secondary_key, uid, amount, config.use_csaf, config.to_balance, memo, config.memo_key).then(tx => {
-            utils.success(res, tx);
-        }).catch(e => {
-            utils.error(res, e);
-        });
+    Api.transfer(config.platform_id, config.secondary_key, uid, amount, config.use_csaf, config.to_balance, memo, config.memo_key).then(tx => {
+        utils.success(res, tx);
+    }).catch(e => {
+        utils.error(res, e);
+    });
 });
+
+router.post('/transferFromUser', Secure.validQueue, (req, res, next) => {
+    let {from, to, amount, memo} = req.decryptedData;
+    Api.transfer(from, config.secondary_key, to, amount, config.use_csaf, config.to_balance, memo, config.memo_key).then(tx => {
+        utils.success(res, tx);
+    }).catch(e => {
+        utils.error(res, e);
+    });
+})
 
 router.get('/getHistory', (req, res, next) => {
     let {uid, page, size} = req.query;
