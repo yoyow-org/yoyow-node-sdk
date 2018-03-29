@@ -163,6 +163,38 @@
 
     平台名称、平台url地址和平台拓展信息如没有变动则填入null，如示例操作，不会改变平台url地址和拓展信息
 
+##### 2.6 平台扫码登录协议
+
+    平台属性 extra_data 拓展信息 JSON对象格式字符串 中
+
+    约定 "login" 为平台扫码登录接口地址
+
+    如 "extra_data": "{\"login\":\"http://localhost:8280/login\"}",
+
+    App扫码授权登录将访问该地址 ，发送回用户签名对象
+
+    {
+
+      {Number} yoyow - 当前操作用户账号id
+
+      {String} time - 签名时间戳字符串
+
+      {String} sign - 签名字符串
+
+      {String} state - 平台签名时传入的自定义信息 (参考 Auth 相关 2.3 - signQR)
+
+    }
+
+    约定 平台提供的接口必须返回以下信息
+
+    {
+
+      {Number} code - 操作结果 0 为通过 任何非 0 情况视为错误处理
+      
+      {String} message - 操作结果描述
+
+    }
+
 #### 3. 修改中间件配置 
   
     ~/yoyow-node-sdk/middleware/conf/config.js
@@ -642,6 +674,26 @@
         verify: 签名是否成功,
         name: 签名的yoyow用户名
       }
+    }
+
+##### 2.3 签名平台 返回二维码 signQR
+
+  请求类型：GET
+
+  请求参数：
+
+    {String} state - 用于发送到平台登录接口时除原签名信息以外掉拓展信息
+
+  请求示例：
+
+    localhost:3000/auth/signQR?state=platformCustomParams
+
+  返回结果：
+
+    {
+      code: 操作结果,
+      message: 返回消息,
+      data: 二维码图片base64 字符串
     }
 
 ### 安全请求验证
