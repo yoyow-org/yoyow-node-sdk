@@ -19,7 +19,7 @@ Steps to find all your public/private keys:
 
 #### 2. Create platform
 
-To create a platform, 11000 YOYOs are needed at least, 10000 YOYOs(TESTs in test-net) for deposition and 1000 YOYOs for the registration fee.
+To create a platform, 11000 YOYOs(TESTs in test-net) are needed at least, 10000 YOYOs for deposition and 1000 YOYOs for the registration fee.
  (12000 TESTs are transferred to you when your registration is finished, which is enough to create a platform)
 
 ##### 2.1 Run cli-wallet
@@ -69,7 +69,7 @@ Connect to the server successfully and you will see:
     Please use the set_password method to initialize a new wallet before continuing
     new >>>
 
-type in your password and hit enter:
+Setup your password by:
 
     new >>> set_password <your password>
     <ENTER>
@@ -88,7 +88,7 @@ and then unlock your wallet:
     unlocked >>>
 
 
-##### 2.3 导入资金私钥
+##### 2.3 Import active private key
 
     unlocked >>> import_key <yoyow uid> <private key of active key>
 
@@ -101,7 +101,7 @@ will give you:
     1937037ms th_a       wallet.cpp:820                save_wallet_file     ] saving wallet to file wallet.json
     true
 
-if not `true` returned, please make sure your uid and private key are correctly typeed in.
+if not `true` returned, please make sure your uid and private key are correct.
 
 ##### 2.4 Create platform
 
@@ -157,8 +157,8 @@ For example:
 
 The result returned is same as `Create platform`.
 
-> Note: leave `platform name`, `url for platform` and `extra information` to `null` will not change the corresponding value，
-that's to say in the previous example，the `url for platform` and `extra information` won't be changed.
+> Note: leave `platform name`, `url for platform` or `extra information` to `null` will not change the corresponding value，
+that's to say, as in the previous example，the `url for platform` and `extra information` won't be changed.
 
 #### 3. Customize configuration of middleware
   
@@ -371,16 +371,16 @@ When startup normally and successfully, you'll see:
 
     #structure of request:
 
-    {Number} platform - 平台账号
-    {Number} poster - yoyow id of poster
-    {Number} post_pid - id of this post
-    {String} title - title of this post
-    {String} body - content of this post
-    {String} extra_data - extra info of this post
+    {Number} platform     - 平台账号
+    {Number} poster       - yoyow id of poster
+    {Number} post_pid     - id of this post
+    {String} title        - title of this post
+    {String} body         - content of this post
+    {String} extra_data   - extra info of this post
     {String} origin_platform - 原文平台账号（默认 null）
-    {String} origin_poster - 原文发文者账号（默认 null）
+    {String} origin_poster   - 原文发文者账号（默认 null）
     {String} origin_post_pid - 原文id of this post（默认 null）
-    {Number} time - operation time
+    {Number} time         - operation time
 
   example: see chapter `Verification of request`
     
@@ -395,7 +395,7 @@ When startup normally and successfully, you'll see:
       }
     }
 
-##### 1.6. 更新文章 postUpdate(security verification needed)
+##### 1.6. postUpdate - update Post (security verification needed)
 
 type: POST
 
@@ -515,7 +515,7 @@ type: POST
     {String} memo   - memo
     {Number} time   - operation time
   
-  params: see chapter `Verification of request`
+  example: see chapter `Verification of request`
     
   response: 
   
