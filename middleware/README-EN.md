@@ -4,13 +4,13 @@
 
 #### 1. Create test-net account
 
-Address of test-net [http://demo.yoyow.org:8000](http://demo.yoyow.org:8000 "test-net address of yoyow wallet").
+Address of test-net is [http://demo.yoyow.org:8000](http://demo.yoyow.org:8000 "test-net address of yoyow wallet").
 
 ![create account](https://github.com/chen188/yoyow-node-sdk/blob/master/middleware/public/images/step1-en.png)
 
-The steps you can find all your public/private keys:
+Steps to find all your public/private keys:
 
-- log into wallet
+- log into [wallet](http://demo.yoyow.org:8000 "test-net address of yoyow wallet").
 - goto `Settings` on the left side
 - click the `Account` and all public keys come to you, including `Owner`, `Active`,`Secondary` and `Memo` key
 - if you want to check the private key, click `Show Private Key` besides public key and type in you `wallet password` accordingly.
@@ -19,8 +19,8 @@ The steps you can find all your public/private keys:
 
 #### 2. Create platform
 
-    To create a platform, 11000 YOYOs are needed at least, 10000 YOYOs(TESTs in test-net) for deposit and 1000 YOYOs for the registration fee.
-     (12000 TESTs are given to you when your account's registration finished, which is enough to create a platform)
+To create a platform, 11000 YOYOs are needed at least, 10000 YOYOs(TESTs in test-net) for deposition and 1000 YOYOs for the registration fee.
+ (12000 TESTs are transferred to you when your registration is finished, which is enough to create a platform)
 
 ##### 2.1 Run cli-wallet
 ###### 2.1.1 run with parameters
@@ -35,8 +35,7 @@ Open Terminal and paste  following commands:
     # for Ubuntu
     ./yoyow_client.linux -s ws://47.52.155.181:10011 --chain-id 3505e367fe6cde243f2a1c39bd8e58557e23271dd6cbf4b29a8dc8c44c9af8fe
 
-> used when the permission problem comes to you
-
+    # used when the permission problem comes to you
     sudo chmod a+x * 
   
 
@@ -65,7 +64,7 @@ and then choose the corresponding command of your OS,
 
 ##### 2.2 set wallet password
 
-Connect with server successfully and you will see:
+Connect to the server successfully and you will see:
 
     Please use the set_password method to initialize a new wallet before continuing
     new >>>
@@ -152,11 +151,11 @@ will gives you:
 
     unlocked >>> update_platform <yoyow uid> <"platform name"> <pledge amount> <symbol of coin> "<url for platform>" "<json string of platform's extra information>" true
 
-for example:
+For example:
 
     unlocked >>> update_platform 235145448 "newplatformname" 10000 YOYO null null true
 
-the result returned is same as `Create platform`.
+The result returned is same as `Create platform`.
 
 > Note: leave `platform name`, `url for platform` and `extra information` to `null` will not change the corresponding value，
 that's to say in the previous example，the `url for platform` and `extra information` won't be changed.
@@ -204,26 +203,26 @@ that's to say in the previous example，the `url for platform` and `extra inform
 
      npm start
     
-When startup normally and successfully, you can see:
+When startup normally and successfully, you'll see:
 
 ![startup normally and successfully](https://github.com/chen188/yoyow-node-sdk/blob/master/middleware/public/images/step4.png)
      
 ### Details on response code(error code)
  
     1001 Invalid signature
-    1002 Invaild time of signature
+    1002 Invalid time of signature
     1003 Expired request
     1004 Invalid operation time
-    1005 Invalid signature of operation
+    1005 Invalid signature of the request
     1006 Inconsistent with On-Chain account information(Mostly caused by using other computers' local data or old backup files for authorization operations after private key recovery)
     1007 Unauthorized platform
-    2000 API internal error
+    2000 Internal API error
     2001 Account not exists
     2002 Invalid account
     2003 Invalid transfer amount 
-    2004 Insufficient Tipping and Bonous Point to afford fees
+    2004 Insufficient Tipping and Bonus Point to afford fees
     2005 Insufficient Tipping
-    3001 Artical ID must equal to this platform's latest artical id + 1. (these IDs are managed by platform)
+    3001 Article ID must equal with this platform's latest article id + 1. (these IDs are managed by platform)
       
 ### Documents on API
 
@@ -284,7 +283,7 @@ When startup normally and successfully, you can see:
     {Number} page - page number
     {Number} size - records number per page
 
-  params: 
+  example: 
   
     localhost:3000/api/v1/getHistory?uid=25638&page=1&size=10
 
@@ -311,7 +310,7 @@ When startup normally and successfully, you can see:
     {Object} cipher - cipher object of request
 
              {
-               ct, - Hexadecimal cipher text
+               ct, - Hexadecimal ciphertext
                iv, - Hexadecimal vector
                s   - Hexadecimal salt
              }
@@ -365,7 +364,7 @@ When startup normally and successfully, you can see:
     {Object} cipher - cipher object of request
 
              {
-               ct, - Hexadecimal cipher text
+               ct, - Hexadecimal ciphertext
                iv, - Hexadecimal vector
                s   - Hexadecimal salt
              }
@@ -405,7 +404,7 @@ type: POST
     {Object} cipher - cipher object of request
 
              {
-               ct, - Hexadecimal cipher text
+               ct, - Hexadecimal ciphertext
                iv, - Hexadecimal vector
                s   - Hexadecimal salt
              }
@@ -420,7 +419,7 @@ type: POST
     {String} extra_data - extra info of this post
     {Number} time     - operation time
 
-  > Note: when updating an post, at least one field of title, body and extra_data should be present and different with original
+  > Note: when updating a post, at least one field of title, body, and extra_data should be present and different with original
 
   example: see chapter `Verification of request`
     
@@ -503,7 +502,7 @@ type: POST
     {Object} cipher - cipher object of request
 
              {
-               ct, - Hexadecimal cipher text
+               ct, - Hexadecimal ciphertext
                iv, - Hexadecimal vector
                s   - Hexadecimal salt
              }
@@ -547,10 +546,10 @@ type: POST
       code: res_code,
       message: res_message,
       data: {
-        sign: result of sign,
+        sign: the result of sign,
         time: operation time in ms,
         platform: yoyow id of the platform owner,
-        url: authorizing url of wallet
+        url: authorizing URL of wallet
       }
     }
 
@@ -562,7 +561,7 @@ type: POST
 
     {Number} yoyow - yoyow id
     {Number} time - operation time in ms
-    {String} sign - result of sign
+    {String} sign - the result of sign
 
   example: 
 
@@ -583,9 +582,9 @@ type: POST
 
 Operations manipulating money will be validated in middleware service.
 
-`secure_key` in `config` is the place where platform can customize the key.
+`secure_key` in `config` is the place where the platform can customize the key.
 
-Encrypt the operation object for sending request.
+Encrypt the operation object for sending a request.
 
 Encryption example(JS version).
 
