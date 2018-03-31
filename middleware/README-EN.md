@@ -371,15 +371,15 @@ When startup normally and successfully, you'll see:
 
     #structure of request:
 
-    {Number} platform     - 平台账号
+    {Number} platform     - yoyow id of platform
     {Number} poster       - yoyow id of poster
     {Number} post_pid     - id of this post
     {String} title        - title of this post
     {String} body         - content of this post
     {String} extra_data   - extra info of this post
-    {String} origin_platform - 原文平台账号（默认 null）
-    {String} origin_poster   - 原文发文者账号（默认 null）
-    {String} origin_post_pid - 原文id of this post（默认 null）
+    {String} origin_platform - origin platform of post(defaults to null)
+    {String} origin_poster   - origin poster of post(defaults to null)
+    {String} origin_post_pid - origin post id(defaults to null)
     {Number} time         - operation time
 
   example: see chapter `Verification of request`
