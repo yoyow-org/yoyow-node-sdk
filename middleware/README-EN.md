@@ -6,7 +6,7 @@
 
 Address of test-net [http://demo.yoyow.org:8000](http://demo.yoyow.org:8000 "test-net address of yoyow wallet").
 
-![create account](https://github.com/chen188/yoyow-node-sdk/blob/master/middleware/public/images/step1.png)
+![create account](https://github.com/chen188/yoyow-node-sdk/blob/master/middleware/public/images/step1-en.png)
 
 The steps you can find all your public/private keys:
 
@@ -15,7 +15,7 @@ The steps you can find all your public/private keys:
 - click the `Account` and all public keys come to you, including `Owner`, `Active`,`Secondary` and `Memo` key
 - if you want to check the private key, click `Show Private Key` besides public key and type in you `wallet password` accordingly.
     
-![find all keys](https://github.com/bulangnisi/yoyow-node-sdk/blob/master/middleware/public/images/step3.png)
+![find all keys](https://github.com/bulangnisi/yoyow-node-sdk/blob/master/middleware/public/images/step3-en.png)
 
 #### 2. Create platform
 
