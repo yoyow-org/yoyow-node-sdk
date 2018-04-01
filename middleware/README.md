@@ -21,10 +21,6 @@
 ##### 2.1 启动cli钱包
 ###### 2.1.1 带参数启动
 
-    打开控制台
-
-    cd ~/yoyow-node-sdk/cli
-
     Ubuntu
 
     ./yoyow_client -s ws://47.52.155.181:10011 --chain-id 3505e367fe6cde243f2a1c39bd8e58557e23271dd6cbf4b29a8dc8c44c9af8fe
