@@ -6,6 +6,8 @@
 
 Address of test-net is [http://demo.yoyow.org:8000](http://demo.yoyow.org:8000 "test-net address of yoyow wallet").
 
+The CLI program can be obtained from [https://github.com/yoyow-org/yoyow-core-testnet/releases/](https://github.com/yoyow-org/yoyow-core-testnet/releases/).
+
 ![create account](https://github.com/chen188/yoyow-node-sdk/blob/master/middleware/public/images/step1-en.png)
 
 Steps to find all your public/private keys:
@@ -25,15 +27,8 @@ To create a platform, 11000 YOYOs(TESTs in test-net) are needed at least, 10000 
 ##### 2.1 Run cli-wallet
 ###### 2.1.1 run with parameters
 
-Open Terminal and paste  following commands:
-
-    cd ~/yoyow-node-sdk/cli
-
-    # for Mac
-    ./yoyow_client.mac -s"ws://47.52.155.181:10011" --chain-id 3505e367fe6cde243f2a1c39bd8e58557e23271dd6cbf4b29a8dc8c44c9af8fe
-
     # for Ubuntu
-    ./yoyow_client.linux -s ws://47.52.155.181:10011 --chain-id 3505e367fe6cde243f2a1c39bd8e58557e23271dd6cbf4b29a8dc8c44c9af8fe
+    ./yoyow_client -s ws://47.52.155.181:10011 --chain-id 3505e367fe6cde243f2a1c39bd8e58557e23271dd6cbf4b29a8dc8c44c9af8fe
 
     # used when the permission problem comes to you
     sudo chmod a+x * 
@@ -56,11 +51,8 @@ create file `wallet.json` under the same directory with `cli-wallet`, filling it
 
 and then choose the corresponding command of your OS,
 
-    # for Mac 
-    ./yoyow_client.mac
-
     # for Ubuntu
-    ./yoyow_client.linux
+    ./yoyow_client
 
 ##### 2.2 set wallet password
 
@@ -160,6 +152,26 @@ The result returned is same as `Create platform`.
 > Note: leave `platform name`, `url for platform` or `extra information` to `null` will not change the corresponding value，
 that's to say, as in the previous example，the `url for platform` and `extra information` won't be changed.
 
+##### 2.6 Login by scanning QR code 平台扫码登录协议
+
+The `login` field in platform property `extra_data` is used by platform login through scanning QR code, e.g. ```"extra_data": "{\"login\":\"http://localhost:8280/login\"}```
+
+Authorization by scanning QR code in APP will access this address and send back the user signature object.
+
+    {
+      {Number} yoyow - the yoyow id of current user
+      {String} time  - signature timestramp in ms
+      {String} sign  - signation
+      {String} state - platform defined information when requesting(See chapter 2.3 - signQR)
+    }
+
+Following information is expected from platform specified API
+
+    {
+      {Number} code    - operation result. 0 indicates passing, any non-zero condition should be treated as an error.
+      {String} message - operation comment.
+    }
+    
 #### 3. Customize configuration of middleware
   
     ~/yoyow-node-sdk/middleware/conf/config.js
@@ -177,7 +189,7 @@ that's to say, as in the previous example，the `url for platform` and `extra in
     secondary_key: "", 
 
     // Platform's MEMO key(can be obtained as chapter 1. Create test-net account)
-    memo_key: "5JknyFdAuHqvv7r2m2Am7cUUCmQ4T2kFB7dtPWiKrvt8i7N1x3D",
+    memo_key: "",
 
     // Platform's uid(yoyow id)
     platform_id: "",
@@ -576,6 +588,27 @@ type: POST
         verify: is signature vaild,
         name: yoyow name of this signature
       }
+    }
+    
+##### 2.3 signQR - sign platform and returned as QR code
+
+  type：GET
+
+  params：
+
+    {String} state - optional extension inforamation in addition to signature data sended to platform login interface, 
+                     only used when platform defined paramenters are needed.
+    
+  example：
+
+    localhost:3000/auth/signQR?state=platformCustomParams
+
+  response：
+
+    {
+      code: res_code,
+      message: res_message,
+      data: base64 encoded QR code image
     }
 
 ### Verification of request
