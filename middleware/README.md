@@ -6,6 +6,8 @@
 
 测试网地址 [http://demo.yoyow.org:8000](http://demo.yoyow.org:8000 "yoyow钱包测试网").
 
+测试网CLI下载 [https://github.com/yoyow-org/yoyow-core-testnet/releases/](https://github.com/yoyow-org/yoyow-core-testnet/releases/).
+
 ![创建测试网账号](https://github.com/bulangnisi/yoyow-node-sdk/blob/master/middleware/public/images/step1.png)
 
 平台所有者的各权限私钥获取方式 登录钱包 》 左侧菜单设置 》 账号 》 查看权限 》 在对应权限密钥的右侧点击显示私钥 》 输入密码显示私钥 》 将看到的私钥拷贝进配置中.
@@ -19,17 +21,9 @@
 ##### 2.1 启动cli钱包
 ###### 2.1.1 带参数启动
 
-    打开控制台
-
-    cd ~/yoyow-node-sdk/cli
-
-    Mac
-
-    ./yoyow_client.mac -s"ws://47.52.155.181:10011" --chain-id 3505e367fe6cde243f2a1c39bd8e58557e23271dd6cbf4b29a8dc8c44c9af8fe
-
     Ubuntu
 
-    ./yoyow_client.linux -s ws://47.52.155.181:10011 --chain-id 3505e367fe6cde243f2a1c39bd8e58557e23271dd6cbf4b29a8dc8c44c9af8fe
+    ./yoyow_client -s ws://47.52.155.181:10011 --chain-id 3505e367fe6cde243f2a1c39bd8e58557e23271dd6cbf4b29a8dc8c44c9af8fe
 
     如若提示权限不足 
 
@@ -54,13 +48,9 @@
       "ws_password": ""
     }
 
-    Mac 
-
-    ./yoyow_client.mac
-
     Ubuntu
 
-    ./yoyow_client.linux
+    ./yoyow_client
 
 ##### 2.2 设置钱包密码
 
