@@ -27,7 +27,7 @@
 
     Ubuntu
 
-    ./yoyow_client.linux -s ws://47.52.155.181:10011 --chain-id 3505e367fe6cde243f2a1c39bd8e58557e23271dd6cbf4b29a8dc8c44c9af8fe
+    ./yoyow_client -s ws://47.52.155.181:10011 --chain-id 3505e367fe6cde243f2a1c39bd8e58557e23271dd6cbf4b29a8dc8c44c9af8fe
 
     如若提示权限不足 
 
@@ -54,7 +54,7 @@
 
     Ubuntu
 
-    ./yoyow_client.linux
+    ./yoyow_client
 
 ##### 2.2 设置钱包密码
 
