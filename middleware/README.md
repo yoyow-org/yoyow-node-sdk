@@ -212,7 +212,7 @@
     secondary_key: "", 
 
     // 平台所有者备注私钥（获取方式参考1. 创建测试网账号）
-    memo_key: "5JknyFdAuHqvv7r2m2Am7cUUCmQ4T2kFB7dtPWiKrvt8i7N1x3D",
+    memo_key: "",
 
     // 平台id(yoyow id)
     platform_id: "",
