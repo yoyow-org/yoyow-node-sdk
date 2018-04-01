@@ -505,7 +505,7 @@ type: POST
       message: res_message,
       data: [object of post（see `getPost`）]
     }
-##### 1.9. transferFromUser - tranfer between users through platform (security verification needed)
+##### 1.9. transferFromUser - transfer between users through platform (security verification needed)
 
   type: POST
 
