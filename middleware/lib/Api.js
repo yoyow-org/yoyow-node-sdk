@@ -66,7 +66,7 @@ class Api {
             }
         });
     }
-
+    
     /**
      * 转账
      * @param {Number|String} from_uid 转出yoyow账号
@@ -80,7 +80,6 @@ class Api {
      * @returns {Promise<U>|Promise.<T>|*|Promise} resolve({block_num 操作所属块号, txid 操作id}), reject(e 异常信息)
      */
     transfer(from_uid, from_key, to_uid, amount, use_csaf = true, toBlance = true, memo, memo_key) {
-
         let fetchFromKey = new Promise((resolve, reject) => {
             return this.getAccount(from_uid).then(uObj => {
                 resolve(uObj);
@@ -152,16 +151,7 @@ class Api {
                     tr.add_type_operation('transfer', op_data);
                     return tr.set_required_fees(from_uid, false, use_csaf).then(() => {
                         tr.add_signer(PrivateKey.fromWif(from_key));
-                        return tr.broadcast().then((b_res) => {
-                            resolve({
-                                block_num: b_res[0].block_num,
-                                txid: b_res[0].id
-                            });
-                        }).catch(e => {
-                            if(e.message && e.message.indexOf('Insufficient Prepaid') >= 0)
-                                e = {code: 2005, message: '零钱不足'}
-                            reject(e);
-                        });
+                        this.__broadCast(tr).then(res => resolve(res)).catch(err => reject(err));
                     }).catch(e => {
                         reject(e);
                     });
@@ -254,14 +244,7 @@ class Api {
             tr.add_type_operation('post', op_data);
             tr.set_required_fees(poster, false, true).then(() => {
                 tr.add_signer(PrivateKey.fromWif(config.secondary_key));
-                tr.broadcast().then(b_res => {
-                    resolve({
-                        block_num: b_res[0].block_num,
-                        txid: b_res[0].id
-                    });
-                }).catch(e => {
-                    reject(ErrorUtils.formatError(e));
-                });
+                this.__broadCast(tr).then(res => resolve(res)).catch(err => reject(err));
             }).catch(e => {
                 reject({code: 2000, message: e.message});
             });
@@ -301,14 +284,7 @@ class Api {
             tr.add_type_operation('post_update', op_data);
             tr.set_required_fees(poster, false, true).then(() => {
                 tr.add_signer(PrivateKey.fromWif(config.secondary_key));
-                tr.broadcast().then(b_res => {
-                    resolve({
-                        block_num: b_res[0].block_num,
-                        txid: b_res[0].id
-                    });
-                }).catch(e => {
-                    reject(ErrorUtils.formatError(e));
-                });
+                this.__broadCast(tr).then(res => resolve(res)).catch(err => reject(err));
             }).catch(e => {
                 reject({code: 2000, message: e.message});
             });
@@ -360,6 +336,32 @@ class Api {
                 reject(e);
             });
         });
+    }
+
+    /**
+     * 统一广播处理
+     * @param {TransactionBuilder} tr 
+     * 2dd14e67f2341d203104bf4328cd45a3454cbc2a
+     * 1cadba056f18c0563cb74f074cb4e0c4d2d214a8
+     */
+    __broadCast(tr){
+        return new Promise((resolve, reject) => {
+
+            let common_return = trx => {
+                return {
+                    block_num: trx.head_block_number(),
+                    txid: trx.id()
+                };
+            }
+
+            return tr.broadcast(() => resolve(common_return(tr)))
+            .then(() => resolve(common_return(tr)))
+            .catch(e => {
+                if(e.message && e.message.indexOf('Insufficient Prepaid') >= 0)
+                    e = {code: 2005, message: '零钱不足'}
+                reject(e);
+            });
+        })
     }
 
 
