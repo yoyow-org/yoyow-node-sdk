@@ -20,7 +20,7 @@ router.get("/signQR", (req, res, next) => {
 
     Auth.sign('platform', config.platform_id, config.secondary_key).then(signObj => {
         signObj.state = state;
-        let qrBuffer = QRImage.imageSync('auth'+JSON.stringify(signObj), { type: 'png' });
+        let qrBuffer = QRImage.imageSync(JSON.stringify(signObj), { type: 'png' });
         utils.success(res, qrBuffer.toString('base64'));
     }).catch(e => {
         utils.error(res, e);
