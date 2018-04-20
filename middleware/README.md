@@ -160,6 +160,7 @@
     约定 "login" 为平台扫码登录接口地址
 
     如 "extra_data": "{\"login\":\"http://localhost:8280/login\"}",
+    注：地址后不加 "/" 斜杠，以上地址实际为 http://localhost:8280/login
 
     App扫码授权登录将访问该地址 ，发送回用户签名对象
 
