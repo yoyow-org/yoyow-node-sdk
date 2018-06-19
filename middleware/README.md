@@ -615,6 +615,44 @@
       }
     }
 
+##### 1.10. 修改（仅增加白名单）授权用户资产白名单 updateAllowedAssets（需要安全验证的请求）
+
+  请求类型：POST
+
+  请求参数：
+
+
+    {Object} cipher - 请求对象密文对象
+
+             {
+
+               ct, - 密文文本 16进制
+
+               iv, - 向量 16进制
+
+               s   - salt 16进制
+
+             }
+
+  请求对象结构:
+
+    {Number} uid - 目标账户id
+
+    {Number} asset_id - 资产id
+
+  请求示例：参照 安全请求验证
+    
+  返回结果：
+  
+    {
+      code: 操作结果,
+      message: 返回消息,
+      data: {
+        block_num: 操作所属块号
+        txid: 操作id
+      }
+    }
+
 #### 2. Auth 相关
 
 ##### 2.1. 签名平台 sign

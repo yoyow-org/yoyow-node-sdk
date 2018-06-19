@@ -131,6 +131,7 @@ class Api {
                         var long = Long.fromNumber(Date.now());
                         let nonce = long.shiftLeft(8).or(Long.fromNumber(entropy)).toString();
 
+                        // TODO: 用户之间通过平台转账操作，不做签名，因为平台无法获取到用户私钥
                         let message = config.platform_id == from_uid ? Aes.encrypt_with_checksum(
                             PrivateKey.fromWif(memo_key),
                             memoToKey,
@@ -339,10 +340,28 @@ class Api {
     }
 
     /**
+     * 添加资产到用户资产白名单中
+     * @param {Number} uid - 目标账户id
+     * @param {Number} asset_id - 资产id
+     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve({block_num 操作所属块号, txid 操作id}), reject(e 异常信息)
+     */
+    updateAllowedAssets(uid, asset_id){
+        let op_data = {
+            account: uid,
+            assets_to_add: [asset_id],
+            assets_to_remove: []
+        };
+        let tr = new TransactionBuilder();
+        tr.add_type_operation('account_update_allowed_assets', op_data);
+        return tr.set_required_fees(uid, false, true).then(() => {
+            tr.add_signer(PrivateKey.fromWif(config.secondary_key));
+            return this.__broadCast(tr);
+        })
+    }
+
+    /**
      * 统一广播处理
      * @param {TransactionBuilder} tr 
-     * 2dd14e67f2341d203104bf4328cd45a3454cbc2a
-     * 1cadba056f18c0563cb74f074cb4e0c4d2d214a8
      */
     __broadCast(tr){
         return new Promise((resolve, reject) => {

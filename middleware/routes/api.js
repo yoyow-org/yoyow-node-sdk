@@ -87,4 +87,13 @@ router.get('/getPostList', (req, res, next) => {
     });
 });
 
+router.post('/updateAllowedAssets', (req, res, next) => {
+    let {uid, asset_id} = req.decryptedData;
+    Api.updateAllowedAssets(uid, asset_id).then(tx => {
+        utils.success(res, tx);
+    }).catch(e => {
+        utils.error(res, e);
+    })
+});
+
 module.exports = router;
