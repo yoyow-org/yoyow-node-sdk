@@ -34,8 +34,8 @@ router.post('/transferFromUser', Secure.validQueue, (req, res, next) => {
 })
 
 router.get('/getHistory', (req, res, next) => {
-    let {uid, page, size} = req.query;
-    Api.getHistory(uid, page, size).then(data => {
+    let {uid, page, size, op_type} = req.query;
+    Api.getHistory(uid, page, size, op_type).then(data => {
         utils.success(res, data);
     }).catch(e => {
         utils.error(res, e);
@@ -85,6 +85,15 @@ router.get('/getPostList', (req, res, next) => {
     }).catch(e => {
         utils.error(res, e);
     });
+});
+
+router.post('/updateAllowedAssets', (req, res, next) => {
+    let {uid, asset_id} = req.decryptedData;
+    Api.updateAllowedAssets(uid, asset_id).then(tx => {
+        utils.success(res, tx);
+    }).catch(e => {
+        utils.error(res, e);
+    })
 });
 
 module.exports = router;

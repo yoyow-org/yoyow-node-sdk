@@ -131,6 +131,7 @@ class Api {
                         var long = Long.fromNumber(Date.now());
                         let nonce = long.shiftLeft(8).or(Long.fromNumber(entropy)).toString();
 
+                        // TODO: 用户之间通过平台转账操作，不做签名，因为平台无法获取到用户私钥
                         let message = config.platform_id == from_uid ? Aes.encrypt_with_checksum(
                             PrivateKey.fromWif(memo_key),
                             memoToKey,
@@ -167,11 +168,12 @@ class Api {
      * @param {Number|String} uid yoyow账户id
      * @param {Number} page 页码
      * @param {Number} size 每页显示条数
+     * @param {String} op_type 查询op类型 ps: '0' 为 转账op
      * @returns {Promise<PageWrapper>|Promise.<T>|*|Promise} resolve(PageWrapper 分页对象), reject(e 异常信息)
      */
-    getHistory(uid, page = 1, size = 10) {
+    getHistory(uid, page = 1, size = 10, op_type = null) {
         return this.getAccount(uid).then(uObj => {
-            return ChainStore.fetchRelativeAccountHistory(uid, null, 0, 1, 0).then(res => {
+            return ChainStore.fetchRelativeAccountHistory(uid, 0, op_type, 1, 0).then(res => {
                 let headInx = res[0][0];
                 let total = headInx;
                 if(size > 100) size = 100;
@@ -180,7 +182,7 @@ class Api {
                 if (page >= maxPage) page = maxPage;
                 let start = headInx - (page - 1) * size;
 
-                return ChainStore.fetchRelativeAccountHistory(uid, null, 0, size, start).then(list => {
+                return ChainStore.fetchRelativeAccountHistory(uid, op_type, 0, size, start).then(list => {
                     return new PageWrapper(page, maxPage, total, size, list);
                 }).catch(e => {
                     return Promise.reject(e);
@@ -339,10 +341,28 @@ class Api {
     }
 
     /**
+     * 添加资产到用户资产白名单中
+     * @param {Number} uid - 目标账户id
+     * @param {Number} asset_id - 资产id
+     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve({block_num 操作所属块号, txid 操作id}), reject(e 异常信息)
+     */
+    updateAllowedAssets(uid, asset_id){
+        let op_data = {
+            account: uid,
+            assets_to_add: [asset_id],
+            assets_to_remove: []
+        };
+        let tr = new TransactionBuilder();
+        tr.add_type_operation('account_update_allowed_assets', op_data);
+        return tr.set_required_fees(uid, false, true).then(() => {
+            tr.add_signer(PrivateKey.fromWif(config.secondary_key));
+            return this.__broadCast(tr);
+        })
+    }
+
+    /**
      * 统一广播处理
      * @param {TransactionBuilder} tr 
-     * 2dd14e67f2341d203104bf4328cd45a3454cbc2a
-     * 1cadba056f18c0563cb74f074cb4e0c4d2d214a8
      */
     __broadCast(tr){
         return new Promise((resolve, reject) => {

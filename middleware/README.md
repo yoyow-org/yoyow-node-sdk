@@ -160,6 +160,7 @@
     约定 "login" 为平台扫码登录接口地址
 
     如 "extra_data": "{\"login\":\"http://localhost:8280/login\"}",
+    注：地址后不加 "/" 斜杠，以上地址实际为 http://localhost:8280/login
 
     App扫码授权登录将访问该地址 ，发送回用户签名对象
 
@@ -325,9 +326,11 @@
 
     {Number} size - 每页显示条数
 
+    {String} op_type - 查询op类型 ps: '0' 为 转账op
+
   请求示例：
   
-    localhost:3000/api/v1/getHistory?uid=25638&page=1&size=10
+    localhost:3000/api/v1/getHistory?uid=25638&page=1&size=10&op_type=0
 
   返回结果：
   
@@ -601,6 +604,44 @@
 
     {Number} time - 操作时间
   
+  请求示例：参照 安全请求验证
+    
+  返回结果：
+  
+    {
+      code: 操作结果,
+      message: 返回消息,
+      data: {
+        block_num: 操作所属块号
+        txid: 操作id
+      }
+    }
+
+##### 1.10. 修改（仅增加白名单）授权用户资产白名单 updateAllowedAssets（需要安全验证的请求）
+
+  请求类型：POST
+
+  请求参数：
+
+
+    {Object} cipher - 请求对象密文对象
+
+             {
+
+               ct, - 密文文本 16进制
+
+               iv, - 向量 16进制
+
+               s   - salt 16进制
+
+             }
+
+  请求对象结构:
+
+    {Number} uid - 目标账户id
+
+    {Number} asset_id - 资产id
+
   请求示例：参照 安全请求验证
     
   返回结果：
