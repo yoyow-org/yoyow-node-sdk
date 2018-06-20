@@ -326,9 +326,11 @@
 
     {Number} size - 每页显示条数
 
+    {String} op_type - 查询op类型 ps: '0' 为 转账op
+
   请求示例：
   
-    localhost:3000/api/v1/getHistory?uid=25638&page=1&size=10
+    localhost:3000/api/v1/getHistory?uid=25638&page=1&size=10&op_type=0
 
   返回结果：
   

@@ -34,8 +34,8 @@ router.post('/transferFromUser', Secure.validQueue, (req, res, next) => {
 })
 
 router.get('/getHistory', (req, res, next) => {
-    let {uid, page, size} = req.query;
-    Api.getHistory(uid, page, size).then(data => {
+    let {uid, page, size, op_type} = req.query;
+    Api.getHistory(uid, page, size, op_type).then(data => {
         utils.success(res, data);
     }).catch(e => {
         utils.error(res, e);

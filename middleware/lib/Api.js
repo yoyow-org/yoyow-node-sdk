@@ -168,11 +168,12 @@ class Api {
      * @param {Number|String} uid yoyow账户id
      * @param {Number} page 页码
      * @param {Number} size 每页显示条数
+     * @param {String} op_type 查询op类型 ps: '0' 为 转账op
      * @returns {Promise<PageWrapper>|Promise.<T>|*|Promise} resolve(PageWrapper 分页对象), reject(e 异常信息)
      */
-    getHistory(uid, page = 1, size = 10) {
+    getHistory(uid, page = 1, size = 10, op_type = null) {
         return this.getAccount(uid).then(uObj => {
-            return ChainStore.fetchRelativeAccountHistory(uid, null, 0, 1, 0).then(res => {
+            return ChainStore.fetchRelativeAccountHistory(uid, 0, op_type, 1, 0).then(res => {
                 let headInx = res[0][0];
                 let total = headInx;
                 if(size > 100) size = 100;
@@ -181,7 +182,7 @@ class Api {
                 if (page >= maxPage) page = maxPage;
                 let start = headInx - (page - 1) * size;
 
-                return ChainStore.fetchRelativeAccountHistory(uid, null, 0, size, start).then(list => {
+                return ChainStore.fetchRelativeAccountHistory(uid, op_type, 0, size, start).then(list => {
                     return new PageWrapper(page, maxPage, total, size, list);
                 }).catch(e => {
                     return Promise.reject(e);
