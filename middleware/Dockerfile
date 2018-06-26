@@ -3,7 +3,7 @@ FROM ubuntu:18.04
 EXPOSE 3001
 
 # install nvm and nodejs
-ENV NVM_DIR=/usr/local/nvm NODE_VERSION=10.1.0
+ENV NVM_DIR=/usr/local/nvm    NODE_VERSION=10.1.0
 
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh &&\
         apt-get update &&\
