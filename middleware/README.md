@@ -157,7 +157,9 @@
 
     平台属性 extra_data 拓展信息 JSON对象格式字符串 中
 
-    "login":"http://example/login"  平台扫码登录请求接口
+    {
+      
+    "login":"http://example/login" 平台扫码登录请求接口
 
     "description":"平台说明"  平台描述
 
@@ -168,6 +170,8 @@
     "packagename":"com.example.app" 平台android 跳转
 
     "urlscheme":"example://"  平台ios跳转
+
+    }
 
 ##### 2.7 平台扫码登录
 
