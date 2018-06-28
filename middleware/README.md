@@ -157,21 +157,25 @@
 
     平台属性 extra_data 拓展信息 JSON对象格式字符串 中
 
-    "login":"http://example/login",		       平台扫码登录请求接口
+    {
 
-    "description":"平台说明",								  平台描述
+    "login":"http://example/login" 平台扫码登录请求接口
 
-    "image":"http://example.image.jpg",			 平台头像，yoyow app 1.1 中，显示的平台头像
+    "description":"平台说明"  平台描述
 
-    "h5url":"http://exampleH5.com",					 平台h5地址，用于在无app可跳转动情况下，调整h5页面
+    "image":"http://example.image.jpg" 平台头像，yoyow app 1.1 中，显示的平台头像
 
-    "packagename":"com.example.app",					平台android 跳转
+    "h5url":"http://exampleH5.com" 平台h5地址，用于在无app可跳转动情况下，调整h5页面
 
-    "urlscheme":"example://"									平台ios跳转
+    "packagename":"com.example.app" 平台android 跳转
+
+    "urlscheme":"example://"  平台ios跳转
+
+    }
 
 ##### 2.7 平台扫码登录
 
-    App扫码授权登录将访问该地址 ，发送回用户签名对象
+    App扫码授权登录将访问 平台拓展信息的 平台扫码登录请求接口 ，发送回用户签名对象
 
     {
 
