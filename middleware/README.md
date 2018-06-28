@@ -153,14 +153,23 @@
 
     平台名称、平台url地址和平台拓展信息如没有变动则填入null，如示例操作，不会改变平台url地址和拓展信息
 
-##### 2.6 平台扫码登录协议
+##### 2.6 平台拓展信息协议
 
     平台属性 extra_data 拓展信息 JSON对象格式字符串 中
 
-    约定 "login" 为平台扫码登录接口地址
+    "login":"http://example/login",		       平台扫码登录请求接口
 
-    如 "extra_data": "{\"login\":\"http://localhost:8280/login\"}",
-    注：地址后不加 "/" 斜杠，以上地址实际为 http://localhost:8280/login
+    "description":"平台说明",								  平台描述
+
+    "image":"http://example.image.jpg",			 平台头像，yoyow app 1.1 中，显示的平台头像
+
+    "h5url":"http://exampleH5.com",					 平台h5地址，用于在无app可跳转动情况下，调整h5页面
+
+    "packagename":"com.example.app",					平台android 跳转
+
+    "urlscheme":"example://"									平台ios跳转
+
+##### 2.7 平台扫码登录
 
     App扫码授权登录将访问该地址 ，发送回用户签名对象
 
