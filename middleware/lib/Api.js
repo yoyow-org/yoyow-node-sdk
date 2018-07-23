@@ -22,6 +22,10 @@ var {
 
 let dynamic_global_params_type = `2.${parseInt(ChainTypes.impl_object_type.dynamic_global_property, 10)}.0`;
 
+let _getAssetPrecision = (precision) => {
+    return Math.pow(10, precision);
+}
+
 /**
  * Api 操作
  */
@@ -70,6 +74,7 @@ class Api {
     /**
      * 转账
      * @param {Number|String} from_uid 转出yoyow账号
+     * @param {Number} asset_id 资产id
      * @param {String} from_key 转出账号零钱私钥
      * @param {Number|String} to_uid 转入yoyow账号
      * @param {Number} amount 转账数额
@@ -79,7 +84,7 @@ class Api {
      * @param {String} [memo_key] 备注密钥 - 需要写入备注时必填
      * @returns {Promise<U>|Promise.<T>|*|Promise} resolve({block_num 操作所属块号, txid 操作id}), reject(e 异常信息)
      */
-    transfer(from_uid, from_key, to_uid, amount, use_csaf = true, toBlance = true, memo, memo_key) {
+    transfer(from_uid, asset_id, from_key, to_uid, amount, use_csaf = true, toBlance = true, memo, memo_key) {
         let fetchFromKey = new Promise((resolve, reject) => {
             return this.getAccount(from_uid).then(uObj => {
                 resolve(uObj);
@@ -96,17 +101,25 @@ class Api {
             });;
         });
 
+        let fetchAsset = new Promise((resolve, reject) => {
+           return this.getAsset(asset_id).then(asset => {
+               resolve(asset);
+           }).catch(e => {
+               reject(e);
+           })
+        });
+
         return new Promise((resolve, reject) => {
             if (!utils.isNumber(amount)) {
                 reject({code: 2003, message: '无效的转账金额'});
             } else if (memo && !memo_key) {
                 reject({code: 2004, message: '无效的备注私钥'});
             } else {
-                Promise.all([fetchFromKey, fetchToKey]).then(res => {
+                Promise.all([fetchFromKey, fetchToKey, fetchAsset]).then(res => {
                     let memoFromKey = res[0].memo_key;
                     let memoToKey = res[1].memo_key;
-                    let retain_count = 100000; //资产精度参数
-                    let asset = { amount: Math.round(amount * retain_count), asset_id: 0 };
+                    let retain_count = _getAssetPrecision(res[2].precision); //资产精度参数
+                    let asset = { amount: Math.round(amount * retain_count), asset_id: asset_id };
                     let extensions_data = {
                         from_prepaid: asset,
                         to_balance: asset
@@ -121,9 +134,9 @@ class Api {
                     let op_data = {
                         from: from_uid,
                         to: to_uid,
-                        amount: asset,
-                        extensions: extensions_data
+                        amount: asset
                     };
+                    if(asset_id == 0) op_data.extensions = extensions_data;
 
                     if (memo && memo.trim() != '') {
 
@@ -358,6 +371,27 @@ class Api {
             tr.add_signer(PrivateKey.fromWif(config.secondary_key));
             return this.__broadCast(tr);
         })
+    }
+
+    /**
+     * 获取资产信息
+     * @param {String | Number} search - 资产符号（大写） 或 资产id
+     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve(asset 资产对象), reject(e 异常信息)
+     */
+    getAsset(search){
+        return ChainStore.fetchAsset(search).then(asset => {
+            if(asset) return asset;
+            else return Promise.reject({code: 2006, message: '无效的资产符号或id'});
+        });
+    }
+
+    /**
+     * 获取平台信息
+     * @param {Number} uid - 平台所有者账号uid
+     * @returns {Promise<U>|Promise.<T>|*|Promise} resolve(platform 平台对象), reject(e 异常信息)
+     */
+    getPlatformById(uid){
+        return ChainStore.fetchPlatformByUid(uid);
     }
 
     /**

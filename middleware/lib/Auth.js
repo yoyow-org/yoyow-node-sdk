@@ -31,7 +31,7 @@ class Auth {
             let strObj = JSON.stringify(sendObj);
             let signed = Signature.sign(strObj, PrivateKey.fromWif(key));
             let result = {sign: signed.toHex(), time: time};
-            result[type] = uid
+            result[type] = uid;
             resolve(result);
         });
     }
