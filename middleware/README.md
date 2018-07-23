@@ -212,6 +212,9 @@
     // 平台安全请求验证key 由平台自定义
     secure_key: "",
 
+    // 平台所有者资金私钥 （获取方式参考1. 创建测试网账号）
+    active_key: "",
+
     // 平台所有者零钱私钥（获取方式参考1. 创建测试网账号）
     secondary_key: "", 
 
@@ -274,6 +277,8 @@
     2004 零钱和积分不足支付操作手续费
 
     2005 零钱不足
+
+    2006 无效的资产符号或id
 
     3001 文章ID必须为该平台该发文人的上一篇文章ID +1（平台管理发文id）
       
@@ -382,6 +387,8 @@
     {Number} uid - 指定用户id
 
     {Number} amount - 转出金额
+
+    {Number} asset_id - 资产id 
 
     {string} memo - 备注
 
@@ -667,6 +674,87 @@
         txid: 操作id
       }
     }
+
+##### 1.11. 获取指定资产信息 getAsset
+
+  请求类型：GET
+
+  请求参数：
+    
+    {String | Number} search - 资产符号（大写）或 资产id
+
+  请求示例：
+
+    http://localhost:3001/api/v1/getAsset?search=YOYOW
+
+  返回结果：
+
+    {
+      code: 操作结果,
+      message: 返回消息,
+      data: {
+        "id":"1.3.0", - 资产object id
+        "asset_id":0, - 资产id
+        "symbol":"YOYO", - 资产符号
+        "precision":5, - 资产精度
+        "issuer":1264, - 资产发行者uid
+        "options":{
+          "max_supply":"200000000000000", - 流通量上限
+          "market_fee_percent":0, - 交易手续费百分比
+          "max_market_fee":"1000000000000000", - 交易手续费最大值
+          "issuer_permissions":0, - 资产可用权限
+          "flags":0, - 资产权限
+          "whitelist_authorities":[], - 资产白名单管理员清单 
+          "blacklist_authorities":[], - 资产黑名单管理员清单
+          "whitelist_markets":[], - 交易对白名单
+          "blacklist_markets":[], - 交易对黑名单
+          "description":"" - 资产描述
+        },
+        "dynamic_asset_data_id":"2.2.0", - 资产动态object id
+        "dynamic_asset_data":{
+          "id":"2.2.0", - 资产动态object id
+          "asset_id":0,
+          "current_supply":"107384564466939", - 资产当前发行量
+          "accumulated_fees":0
+        },
+        "current_supply":"107384564466939",  - 资产当前发行量
+        "accumulated_fees":0
+      }
+    }
+
+##### 1.12. 获取指定平台信息 getPlatformById
+
+  请求类型：GET
+
+  请求参数：
+    
+    {Number} uid - 平台所有者账号uid
+
+  请求示例：
+
+    http://localhost:3001/api/v1/getPlatformById?uid=217895094
+
+  返回结果：
+
+  {
+
+    "id": "1.6.0", - 平台 object id
+    "owner": 217895094, - 平台所有者账号uid
+    "name": "test-yoyow", - 平台名称
+    "sequence": 1,
+    "is_valid": true, - 是否有效
+    "total_votes": 0, - 平台总票数
+    "url": "http://demo.yoyow.org/", - 平台url地址
+    "pledge": 1000000000, - 平台抵押（YOYO）
+    "pledge_last_update": "2018-02-10T01:03:57", - 平台抵押最后更新时间
+    "average_pledge": 176601774, - 平台平均抵押
+    "average_pledge_last_update": "2018-02-11T06:49:12", - 平台平均抵押最后更新时间
+    "average_pledge_next_update_block": 4562164, - 平台平均抵押下次更新块号
+    "extra_data": "{}", - 平台拓展信息 
+    "create_time": "2018-02-10T01:03:57", - 平台创建日期
+    "last_update_time": "2018-02-11T06:49:12" - 平台最后更新日期
+
+  }
 
 #### 2. Auth 相关
 

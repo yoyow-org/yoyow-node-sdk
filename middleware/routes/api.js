@@ -16,8 +16,14 @@ router.get('/getAccount', (req, res, next) => {
 });
 
 router.post('/transfer', Secure.validQueue, (req, res, next) => {
-    let {uid, amount, memo} = req.decryptedData;
-    Api.transfer(config.platform_id, config.secondary_key, uid, amount, config.use_csaf, config.to_balance, memo, config.memo_key).then(tx => {
+    let {uid, amount, asset_id, memo} = req.decryptedData;
+    let key = config.secondary_key;
+    if(asset_id && asset_id != 0){
+        key = config.active_key;
+    }else{
+        asset_id = 0;
+    }
+    Api.transfer(config.platform_id, asset_id, key, uid, amount, config.use_csaf, config.to_balance, memo, config.memo_key).then(tx => {
         utils.success(res, tx);
     }).catch(e => {
         utils.error(res, e);
@@ -26,7 +32,7 @@ router.post('/transfer', Secure.validQueue, (req, res, next) => {
 
 router.post('/transferFromUser', Secure.validQueue, (req, res, next) => {
     let {from, to, amount, memo} = req.decryptedData;
-    Api.transfer(from, config.secondary_key, to, amount, config.use_csaf, config.to_balance, memo, config.memo_key).then(tx => {
+    Api.transfer(from, 0, config.secondary_key, to, amount, config.use_csaf, config.to_balance, memo, config.memo_key).then(tx => {
         utils.success(res, tx);
     }).catch(e => {
         utils.error(res, e);
@@ -95,5 +101,23 @@ router.post('/updateAllowedAssets', (req, res, next) => {
         utils.error(res, e);
     })
 });
+
+router.get('/getAsset', (req, res, next) => {
+    let {search} = req.query;
+    Api.getAsset(search).then(asset => {
+        utils.success(res, asset);
+    }).catch(e => {
+        utils.error(res, e);
+    })
+});
+
+router.get('/getPlatformById', (req, res, next) => {
+    let {uid} = req.query;
+    Api.getPlatformById(uid).then(platform => {
+        utils.success(res, platform);
+    }).catch(e => {
+        utils.error(res, e);
+    })
+})
 
 module.exports = router;
