@@ -594,47 +594,28 @@
       message: 返回消息,
       data: [文章对象（参考获取单个文章返回的数据结构）]
     }
-##### 1.9. 用户对用户通过平台转账 transferFromUser（需要安全验证的请求）
+##### 1.9. 获取转账二维码文本（YOYOW APP 扫码可扫此二维码）
 
-  请求类型：POST
+  请求类型：GET
 
   请求参数：
 
-    {Object} cipher - 请求对象密文对象
+    {Number} amount - 收款金额 （与收款备注都不填写的情况，用户可在APP中输入）
 
-             {
+    {String} memo - 收款备注 （与收款金额都不填写的情况，用户可在APP中输入）
 
-               ct, - 密文文本 16进制
+    {String | Number} asset - 转账资产符号 或 资产ID（默认为YOYO资产）
 
-               iv, - 向量 16进制
+  请求示例：
 
-               s   - salt 16进制
-
-             }
-
-  请求对象结构：
-
-    {Number} from - 转账发起账号 yoyow id
-
-    {Number} to - 转账目标账号 yoyow id
-
-    {Number} amount - 转账金额
-
-    {String} memo - 备注
-
-    {Number} time - 操作时间
-  
-  请求示例：参照 安全请求验证
+    http://localhost:3001/api/v1/getQRReceive?amount=98&memo=新的转账&asset_id=0
     
   返回结果：
   
     {
       code: 操作结果,
       message: 返回消息,
-      data: {
-        block_num: 操作所属块号
-        txid: 操作id
-      }
+      data: 收款二维码字符串
     }
 
 ##### 1.10. 修改（仅增加白名单）授权用户资产白名单 updateAllowedAssets（需要安全验证的请求）

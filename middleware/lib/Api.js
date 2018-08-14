@@ -395,6 +395,37 @@ class Api {
     }
 
     /**
+     * 获取转账二维码
+     * @param {String | Number} toAccount - 平台所有者账号uid
+     * @param {Number} amount - 转账金额
+     * @param {String} memo - 转账备注
+     * @param {String | Number} asset - 转账资产符号 或 资产id
+     */
+    getQRReceive(toAccount, amount, memo, asset){
+        let canMemo = true;
+        if(utils.isNumber(amount) && amount >= 0 && !utils.isEmpty(memo))
+            canMemo = false;
+        else{
+            amount = 0;
+            memo = '';
+        }
+        return this.getAsset(asset).then(a => {
+            let {asset_id, precision, symbol} = a;
+            let resultObj = {
+                type: 'transfer-for-fix',
+                toAccount,
+                amount,
+                memoText: memo,
+                canMemo,
+                transferBalance: true,
+                tokenInfo: asset_id == 0 ? null : 
+                    { asset_id, precision, symbol }
+            }
+            return JSON.stringify(resultObj);
+        });
+    }
+
+    /**
      * 统一广播处理
      * @param {TransactionBuilder} tr 
      */
