@@ -1,2 +1,4 @@
 .idea
 .DS_store
+doc/SDK-Docs
+node_modules

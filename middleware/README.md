@@ -340,28 +340,22 @@
   
     {Number} uid - 账号id
 
-    {Number} page - 页码
+    {Number} op_type - 查询op类型 '0' 为 转账op，默认为null 即查询所有OP类型
 
-    {Number} size - 每页显示条数
+    {Number} start 查询开始编号，为0时则从最新记录开始查询，默认为0
 
-    {String} op_type - 查询op类型 ps: '0' 为 转账op
+    {Number} limit - 查询长度，最大不可超过100条，默认为10
 
   请求示例：
   
-    localhost:3000/api/v1/getHistory?uid=25638&page=1&size=10&op_type=0
+    localhost:3000/api/v1/getHistory?uid=25638&start=1220&limit=30&op_type=0
 
   返回结果：
   
     {
       code: 操作结果,
       message: 返回消息,
-      data: {
-        maxPage: 最大页数,
-        curPage: 当前页数,
-        total: 总条数,
-        size: 每页显示条数,
-        list: 近期活动数据集合
-      }
+      data: [] 历史记录对象数组
     }
 
 ##### 1.3. 转账到指定用户 transfer （需要安全验证的请求）
