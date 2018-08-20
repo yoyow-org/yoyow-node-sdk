@@ -178,28 +178,16 @@ class Api {
 
     /**
      * 获取账户操作历史
-     * @param {Number|String} uid yoyow账户id
-     * @param {Number} page 页码
-     * @param {Number} size 每页显示条数
-     * @param {String} op_type 查询op类型 ps: '0' 为 转账op
-     * @returns {Promise<PageWrapper>|Promise.<T>|*|Promise} resolve(PageWrapper 分页对象), reject(e 异常信息)
+     * @param {Number} uid yoyow账户id
+     * @param {Number} op_type 查询op类型 '0' 为 转账op，默认为null 即查询所有OP类型
+     * @param {Number} start 查询开始编号，为0时则从最新记录开始查询，默认为0
+     * @param {Number} limit 查询长度，最大不可超过100条，默认为10
+     * @returns {Promise<PageWrapper>|Promise.<T>|*|Promise} resolve(Array 历史记录对象数组), reject(e 异常信息)
      */
-    getHistory(uid, page = 1, size = 10, op_type = null) {
+    getHistory(uid, op_type = null, start = 0, limit = 10) {
         return this.getAccount(uid).then(uObj => {
-            return ChainStore.fetchRelativeAccountHistory(uid, 0, op_type, 1, 0).then(res => {
-                let headInx = res[0][0];
-                let total = headInx;
-                if(size > 100) size = 100;
-                let maxPage = Math.ceil(total * 1.0 / size);
-                if (page <= 1) page = 1;
-                if (page >= maxPage) page = maxPage;
-                let start = headInx - (page - 1) * size;
-
-                return ChainStore.fetchRelativeAccountHistory(uid, op_type, 0, size, start).then(list => {
-                    return new PageWrapper(page, maxPage, total, size, list);
-                }).catch(e => {
-                    return Promise.reject(e);
-                });
+            return ChainStore.fetchRelativeAccountHistory(uid, op_type, 0, limit, start).then(res => {
+                return res;
             }).catch(e => {
                 return Promise.reject(e);
             });

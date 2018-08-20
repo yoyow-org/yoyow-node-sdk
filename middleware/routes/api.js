@@ -38,8 +38,8 @@ router.get('/getQRReceive', (req, res, next) => {
 })
 
 router.get('/getHistory', (req, res, next) => {
-    let {uid, page, size, op_type} = req.query;
-    Api.getHistory(uid, page, size, op_type).then(data => {
+    let {uid, op_type, start, limit} = req.query;
+    Api.getHistory(uid, op_type, start, limit).then(data => {
         utils.success(res, data);
     }).catch(e => {
         utils.error(res, e);
@@ -116,6 +116,6 @@ router.get('/getPlatformById', (req, res, next) => {
     }).catch(e => {
         utils.error(res, e);
     })
-})
+});
 
 module.exports = router;

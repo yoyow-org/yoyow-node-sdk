@@ -44,36 +44,36 @@ export class VerifyObj{
 /**
  * 分页对象
  */
-export class PageWrapper{
-    constructor(curPage, maxPage, total, size, list){
-        /**
-         * 当前页
-         * @type {Number}
-         */
-        this.curPage = curPage;
+// export class PageWrapper{
+//     constructor(curPage, maxPage, total, size, list){
+//         /**
+//          * 当前页
+//          * @type {Number}
+//          */
+//         this.curPage = curPage;
 
-        /**
-         * 最大页
-         * @type {Number}
-         */
-        this.maxPage = maxPage;
+//         /**
+//          * 最大页
+//          * @type {Number}
+//          */
+//         this.maxPage = maxPage;
 
-        /**
-         * 总条数
-         * @type {Number}
-         */
-        this.total = total;
+//         /**
+//          * 总条数
+//          * @type {Number}
+//          */
+//         this.total = total;
 
-        /**
-         * 每页条数
-         * @type {Number}
-         */
-        this.size = size;
+//         /**
+//          * 每页条数
+//          * @type {Number}
+//          */
+//         this.size = size;
 
-        /**
-         * 对象数组
-         * @type {Array}
-         */
-        this.list = list;
-    }
-}
+//         /**
+//          * 对象数组
+//          * @type {Array}
+//          */
+//         this.list = list;
+//     }
+// }
