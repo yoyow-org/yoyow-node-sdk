@@ -44,7 +44,11 @@ class Api {
                     if (null == uObj) {
                         reject({code: 2001, message: '账号不存在'});
                     }else{
-                        ChainStore.fetchAccountStatisticsByUid(uid).then(statistics => {
+                        Promise.all([
+                            ChainStore.fetchAccountStatisticsByUid(uid),
+                            ChainStore.fetchAccountBalances(uid, [])
+                        ]).then(res => {
+                            let [statistics, assets] = res;
                             uObj.statistics = {
                                 obj_id: statistics.id,
                                 core_balance: statistics.core_balance,
@@ -57,6 +61,7 @@ class Api {
                                 releasing_committee_member_pledge: statistics.releasing_committee_member_pledge,
                                 releasing_platform_pledge: statistics.releasing_platform_pledge
                             }
+                            uObj.assets = assets;
                             resolve(uObj);
                         }).catch(e => {
                             reject(e);

@@ -317,7 +317,7 @@
         is_full_member: 是否会员
         is_registrar: 是否注册商
         is_admin: 是否管理员
-        statistics: { //用户资产
+        statistics: { //用户YOYO资产详情
           obj_id: 资产对象id
           core_balance: 余额
           prepaid: 零钱
@@ -329,6 +329,16 @@
           releasing_committee_member_pledge: 理事会抵押待退回
           releasing_platform_pledge: 平台抵押待退回
         }
+        assets: [ //用户拥有的所有资产
+            {
+                amount: 资产数量,
+                asset_id: 资产id,
+                precision: 资产精度,
+                symbol: 资产符号,
+                description: 资产描述"
+            }
+            ...
+        ]
       }
     }
 
