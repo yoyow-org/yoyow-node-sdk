@@ -1,10 +1,9 @@
 "use strict"
-import {yoyowSDK} from './yoyow-node-sdk';
+import {PublicKey, Signature, PrivateKey} from "yoyowjs-lib"
 import config from '../conf/config';
 import {SignObj, VerifyObj} from './entity';
 import api from './Api';
 
-var {PublicKey, Signature, ChainStore, PrivateKey} = yoyowSDK;
 
 /**
  * 授权相关操作

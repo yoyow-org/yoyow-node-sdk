@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-import {yoyowSDK} from "../lib/yoyow-node-sdk";
+import { ChainStore } from "yoyowjs-lib";
+import { Apis } from "yoyowjs-ws";
 
 /**
  * Module dependencies.
@@ -19,7 +20,6 @@ var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 var server = null;
 
-var {Apis,ChainStore} = yoyowSDK;
 /**
  * Create API
  */

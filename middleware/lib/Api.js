@@ -1,24 +1,11 @@
-import { yoyowSDK } from "./yoyow-node-sdk";
+import { ChainStore, ChainTypes, PrivateKey, AccountUtils, Aes, TransactionBuilder, hash } from "yoyowjs-lib";
+import { Apis } from "yoyowjs-ws";
 import config from "../conf/config";
 import secureRandom from 'secure-random';
 import { Long } from 'bytebuffer';
 import { PageWrapper } from './entity';
 import utils from './utils';
 import ErrorUtils from './ErrorUtils';
-
-var {
-    PublicKey,
-    Signature,
-    ChainStore,
-    ChainTypes,
-    PrivateKey,
-    AccountUtils,
-    Aes,
-    TransactionBuilder,
-    TransactionHelper,
-    Apis,
-    hash
-    } = yoyowSDK;
 
 let dynamic_global_params_type = `2.${parseInt(ChainTypes.impl_object_type.dynamic_global_property, 10)}.0`;
 

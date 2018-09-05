@@ -3,12 +3,13 @@
 /**
  * Module dependencies.
  */
+import { ChainStore } from "yoyowjs-lib";
+import { Apis } from "yoyowjs-ws";
 
 var app = require('../app');
 var debug = require('debug')('yoyow-middleware:server');
 var http = require('http');
 var config = require("../conf/config");
-import {yoyowSDK} from "../lib/yoyow-node-sdk";
 /**
  * Get port from environment and store in Express.
  */
@@ -16,7 +17,6 @@ import {yoyowSDK} from "../lib/yoyow-node-sdk";
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-var {Apis,ChainStore} = yoyowSDK;
 let server = null;
 
 /**

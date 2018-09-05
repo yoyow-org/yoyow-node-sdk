@@ -1,18 +1,18 @@
 module.exports = {
     // api服务器地址
-    apiServer: "",
+    apiServer: "ws://47.52.155.181:10011",
     // 请求有效时间，单位s
     secure_ageing: 1000,
     // 平台安全请求验证key 由平台自定义
     secure_key: "customkey123456",
     // 平台所有者active私钥
-    active_key: "",
+    active_key: "5Jo6fBSUwgssbyuvEP9RYSpNnrbH7sPXmJkiWCixQ8mueSQKqqc",
     // 平台所有者零钱私钥
-    secondary_key: "",
+    secondary_key: "5JrybUGbKnM3mm1z5aqvsiw8yDxT2CARpNRz84T9r3xUN6ZvRsx",
     // 平台所有者备注私钥
-    memo_key: "",
+    memo_key: "5JknyFdAuHqvv7r2m2Am7cUUCmQ4T2kFB7dtPWiKrvt8i7N1x3D",
     // 平台id(yoyow id)
-    platform_id: "",
+    platform_id: "217895094",
     // 转账是否使用积分
     use_csaf: true,
     // 转账是否转到余额 否则转到零钱

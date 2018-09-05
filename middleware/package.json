@@ -22,7 +22,8 @@
     "jade": "~1.11.0",
     "morgan": "~1.9.0",
     "qr-image": "^3.2.0",
-    "serve-favicon": "~2.4.5"
+    "serve-favicon": "~2.4.5",
+    "yoyowjs-lib": "git+https://github.com/yoyow-org/yoyowjs-lib.git"
   },
   "devDependencies": {
     "assert": "^1.4.1",

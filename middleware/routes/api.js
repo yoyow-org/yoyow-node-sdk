@@ -26,6 +26,7 @@ router.post('/transfer', Secure.validQueue, (req, res, next) => {
     Api.transfer(config.platform_id, asset_id, key, uid, amount, config.use_csaf, config.to_balance, memo, config.memo_key).then(tx => {
         utils.success(res, tx);
     }).catch(e => {
+        console.log(e);
         utils.error(res, e);
     });
 });

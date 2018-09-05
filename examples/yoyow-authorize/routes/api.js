@@ -1,10 +1,9 @@
-import {yoyowSDK} from "../lib/yoyow-node-sdk";
+import {ChainStore} from "yoyowjs-lib";
 import config from "../conf/config";
 import utils from "../lib/utils";
 
 var express = require('express');
 var router = express.Router();
-var {PublicKey, Signature, ChainStore, PrivateKey} = yoyowSDK;
 
 router.get("/getAccount", (req, res, next) => {
     let query = utils.reqJson(req.query);
