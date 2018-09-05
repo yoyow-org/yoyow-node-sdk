@@ -1,10 +1,10 @@
 module.exports = {
     // api服务器地址
-    apiServer: "",
+    apiServer: "ws://47.52.155.181:10011",
     // 请求有效时间，单位s
     secure_ageing: 1000,
     // 平台安全请求验证key 由平台自定义
-    secure_key: "customkey123456",
+    secure_key: "",
     // 平台所有者active私钥
     active_key: "",
     // 平台所有者零钱私钥

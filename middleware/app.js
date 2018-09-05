@@ -12,8 +12,6 @@ var auth = require('./routes/auth');
 var config = require("./conf/config");
 
 import utils from './lib/utils';
-import {yoyowSDK} from './lib/yoyow-node-sdk';
-var {PublicKey, Signature, ChainStore, PrivateKey} = yoyowSDK;
 
 var app = express();
 
