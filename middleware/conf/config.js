@@ -4,15 +4,15 @@ module.exports = {
     // 请求有效时间，单位s
     secure_ageing: 1000,
     // 平台安全请求验证key 由平台自定义
-    secure_key: "customkey123456",
+    secure_key: "",
     // 平台所有者active私钥
-    active_key: "5Jo6fBSUwgssbyuvEP9RYSpNnrbH7sPXmJkiWCixQ8mueSQKqqc",
+    active_key: "",
     // 平台所有者零钱私钥
-    secondary_key: "5JrybUGbKnM3mm1z5aqvsiw8yDxT2CARpNRz84T9r3xUN6ZvRsx",
+    secondary_key: "",
     // 平台所有者备注私钥
-    memo_key: "5JknyFdAuHqvv7r2m2Am7cUUCmQ4T2kFB7dtPWiKrvt8i7N1x3D",
+    memo_key: "",
     // 平台id(yoyow id)
-    platform_id: "217895094",
+    platform_id: "",
     // 转账是否使用积分
     use_csaf: true,
     // 转账是否转到余额 否则转到零钱
